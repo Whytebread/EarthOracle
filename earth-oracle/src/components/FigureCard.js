@@ -9,11 +9,11 @@ const FigureCard = ({ name, pattern }) => {
         {pattern.map((line, i) => (
           <div key={i} className="flex justify-center gap-2">
             {line === 1 ? (
-              <div className="w-3 h-3 bg-white rounded-full"></div>
+              <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
             ) : (
               <>
-                <div className="w-3 h-3 bg-white rounded-full"></div>
-                <div className="w-3 h-3 bg-white rounded-full"></div>
+                <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+                <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
               </>
             )}
           </div>
