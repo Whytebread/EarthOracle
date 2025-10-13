@@ -1,4 +1,4 @@
-const geomanticFigures = [
+export const geomanticFigures = [
   { name: "Via", pattern: [1, 1, 1, 1] },
   { name: "Populus", pattern: [0, 0, 0, 0] },
   { name: "Fortuna Major", pattern: [1, 1, 0, 0] },
@@ -17,5 +17,3 @@ const geomanticFigures = [
   { name: "Tristitia", pattern: [1, 0, 0, 1] },
   
 ];
-
-export default geomanticFigures

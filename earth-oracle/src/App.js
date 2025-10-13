@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import { geomanticFigures } from "./data/figures";
 import FigureCard from "./components/FigureCard";
