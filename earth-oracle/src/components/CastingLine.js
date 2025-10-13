@@ -1,30 +1,38 @@
 import React, { useState } from "react";
 
 const CastingLine = ({ onComplete }) => {
-  const [count, setCount] = useState(0);
+  const [dots, setDots] = useState([]);
   const [finished, setFinished] = useState(false);
 
   const handleClick = () => {
-    if (!finished) setCount(count + 1);
+    if (finished) return;
+    setDots([...dots, { id: Date.now() }]);
   };
 
   const handleFinish = () => {
-    const result = count % 2 === 0 ? 0 : 1; // even = 0, odd = 1
+    if (finished || dots.length < 12) return;
+    const result = dots.length % 2 === 0 ? 0 : 1;
     setFinished(true);
-    onComplete(result); // send result up to parent
+    onComplete(result);
   };
 
   return (
     <div className="flex flex-col items-center mb-4">
       <div
         onClick={handleClick}
-        className={`w-48 h-16 border-2 border-emerald-500 rounded-lg flex items-center justify-center cursor-pointer ${
+        className={`w-48 min-h-[4rem] border-2 border-emerald-500 rounded-lg flex flex-wrap justify-center items-center cursor-pointer p-2 transition-all ${
           finished ? "opacity-50" : "hover:bg-emerald-800/30"
         }`}
       >
-        <span className="text-2xl">{count} dots</span>
+        {dots.map((dot) => (
+          <div
+            key={dot.id}
+            className="w-3 h-3 bg-white rounded-full m-1 animate-pulse"
+          ></div>
+        ))}
       </div>
-      {!finished && (
+
+      {!finished && dots.length > 0 && (
         <button
           onClick={handleFinish}
           className="mt-2 text-sm text-emerald-400 underline"
