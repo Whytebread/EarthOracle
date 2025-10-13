@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import { geomanticFigures } from "./data/figures";
 
 function App() {
   return (
