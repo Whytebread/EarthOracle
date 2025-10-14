@@ -19,6 +19,9 @@ const FigureCard = ({ name, pattern }) => {
           </div>
         ))}
       </div>
+      <div className="text-emerald-300 font-medium text-sm uppercase tracking-wide">
+        {name}
+      </div>
     </div>
   );
 };

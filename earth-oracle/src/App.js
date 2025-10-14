@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { geomanticFigures } from "./data/figures";
 import FigureCard from "./components/FigureCard";
-import { generateRandomFigure } from "./utils/generateFigure";
-import CastingLine from "./components/CastingLine";
+import CastingBoard from "./components/CastingBoard";
 
 function App() {
   const [currentFigureLines, setCurrentFigureLines] = useState([]);
@@ -13,15 +12,21 @@ function App() {
     const updatedLines = [...currentFigureLines, result];
     setCurrentFigureLines(updatedLines);
 
-    if (updatedLines.length === 4) {
-      const newFigure = {
-        name: `Mother ${figureCount + 1}`,
-        pattern: updatedLines,
-      };
-      setFigures([...figures, newFigure]);
-      setCurrentFigureLines([]);
-      setFigureCount((prev) => prev + 1);
-    }
+if (updatedLines.length === 4) {
+  const newFigure = {
+    name: `Mother ${figureCount + 1}`,
+    pattern: updatedLines,
+  };
+  const newFigures = [...figures, newFigure];
+  setFigures(newFigures);
+  setCurrentFigureLines([]);
+  setFigureCount((prev) => prev + 1);
+
+  // Save to localStorage
+  if (newFigures.length === 4) {
+    localStorage.setItem("earthOracleMothers", JSON.stringify(newFigures));
+  }
+}
   };
 
   const handleReset = () => {
@@ -32,14 +37,15 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 flex flex-col items-center p-8">
-      <h1 className="text-3xl font-bold mb-6">EarthOracle</h1>
+      <h1 className="text-3xl font-bold mb-8 text-emerald-400 tracking-wide">EarthOracle</h1>
 
       {figureCount < 4 ? (
         <>
-          <p className="mb-4 text-gray-400">
-            Casting Mother {figureCount + 1} — click to add dots.
-          </p>
-          <CastingLine onComplete={handleLineComplete} key={currentFigureLines.length} />
+          <CastingBoard
+            onComplete={handleLineComplete}
+            currentFigureNumber={figureCount}
+            currentLine={currentFigureLines.length}
+          />
           <div className="mt-4 text-sm text-gray-400">
             Lines completed: {currentFigureLines.length}/4
           </div>
