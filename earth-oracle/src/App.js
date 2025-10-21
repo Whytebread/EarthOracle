@@ -3,6 +3,37 @@ import { geomanticFigures } from "./data/figures";
 import FigureCard from "./components/FigureCard";
 import CastingBoard from "./components/CastingBoard";
 
+// may need to change to dice rolls instead of clicking to generate mothers (very tedious and multi-colored dice will look neat)
+// need to figure out how to determine if judges, witness, etc are favorable to the question (question prompt that lists various subjects?)
+// with eventual monitization, should there be one free reading? a trial? what pricepoint? Free simple reading only for mode or denial of perfection, paid gives a deeper interpreation
+// add way of the points interpretation
+// only eight figures can be a judge
+// add head, neck, body, feet lines (fire, air, water, earth)
+// add the four triplicities reading
+// add house chart
+// possibly add the traditional interpretations for the house chart
+// identify which house corresponds to the question and how the logic will flow for questions
+// add modes of perfection
+// add aspects
+// add company of houses
+// add denial of perfection and unfavorable aspects
+// additional interpretation - the cardines
+// combination of figures
+// the reconciler
+// aspects to the significators
+// projection of points
+// part of fortune
+// calculating the indications
+// third party questions
+// multiple significators
+// daily, weekly, monthly, yearly charts
+// life readings
+// finding directions
+// finding locations
+// calculating time
+// geomantic hours
+// special questions
+
 function App() {
   const [currentFigureLines, setCurrentFigureLines] = useState([]);
   const [figures, setFigures] = useState([]);
