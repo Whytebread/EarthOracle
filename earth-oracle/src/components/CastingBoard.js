@@ -1,7 +1,7 @@
-// src/components/CastingBoard.js
+
 import React, { useState } from "react";
 import DiceRoller from "./DiceRoller";
-import { figureNames } from "../data/figures";
+import { geomanticFigures } from "../data/figures";
 
 const emptyMother = [[], [], [], []];
 
