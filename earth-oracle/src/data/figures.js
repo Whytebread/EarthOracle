@@ -6,6 +6,7 @@ export const geomanticFigures = [
     outerElement: "Water",
     quality: "Mobile",
     planet: "Moon",
+    zodiac: "Cancer",
   },
   {
     name: "Populus",
@@ -14,6 +15,7 @@ export const geomanticFigures = [
     outerElement: "Water",
     quality: "Stable",
     planet: "Moon",
+    zodiac: "Cancer",
   },
   {
     name: "Fortuna Major",
@@ -22,6 +24,7 @@ export const geomanticFigures = [
     outerElement: "Fire",
     quality: "Stable",
     planet: "Sun",
+    zodiac: "Leo",
   },
   {
     name: "Fortuna Minor",
@@ -30,6 +33,7 @@ export const geomanticFigures = [
     outterElement: "Air",
     quality: "Mobile",
     planet: "Sun",
+    zodiac: "Leo",
   },
   {
     name: "Cauda Draconis",
@@ -37,7 +41,8 @@ export const geomanticFigures = [
     innerElement: "Fire",
     outerElement: "Fire",
     quality: "Mobile",
-    planet: "Lunar Node"
+    planet: "Lunar Node",
+    zodiac: "Sagittarius",
   },
   {
     name: "Puer",
@@ -46,6 +51,7 @@ export const geomanticFigures = [
     outerElement: "Fire",
     quality: "Mobile",
     planet: "Mars",
+    zodiac: "Aries",
 
   },
   {
@@ -55,6 +61,7 @@ export const geomanticFigures = [
     outerElement: "Air",
     quality: "Stable",
     planet: "Venus",
+    zodiac: "Libra",
   },
   {
     name: "Carcer",
@@ -63,6 +70,7 @@ export const geomanticFigures = [
     outerElement: "Earth",
     quality: "Stable",
     planet: "Saturn",
+    zodiac: "Capricorn",
   },
   {
     name: "Amissio",
@@ -71,6 +79,7 @@ export const geomanticFigures = [
     outeElement: "Earth",
     quality: "Mobile",
     planet: "Venus",
+    zodiac: "Taurus",
   },
   {
     name: "Laetitia",
@@ -79,6 +88,7 @@ export const geomanticFigures = [
     outerElement: "Water",
     quality: "Mobile",
     planet: "Jupiter",
+    zodiac: "Pisces",
   },
   {
     name: "Caput Draconis",
@@ -87,6 +97,7 @@ export const geomanticFigures = [
     outerElement: "Earth",
     quality: "Stable",
     planet: "Lunar Node",
+    zodiac: "Virgo",
   },
   {
     name: "Conjunctio",
@@ -95,6 +106,7 @@ export const geomanticFigures = [
     outerElement: "Earth",
     quality: "Mobile",
     planet: "Mercury",
+    zodiac: "Virgo",
   },
   {
     name: "Acquisitio",
@@ -103,6 +115,7 @@ export const geomanticFigures = [
     outerElement: "Fire",
     quality: "Stable",
     planet: "Jupiter",
+    zodiac: "Sagittarius",
   },
   {
     name: "Rubeus",
@@ -111,6 +124,7 @@ export const geomanticFigures = [
     outerElement: "Water",
     quality: "Mobile",
     planet: "Mars",
+    zodiac: "Scorpio",
   },
   {
     name: "Albus",
@@ -119,6 +133,7 @@ export const geomanticFigures = [
     outerElement: "Air",
     quality: "Stable",
     planet: "Mercury",
+    zodiac: "Gemini",
   },
   {
     name: "Tristitia",
@@ -127,6 +142,7 @@ export const geomanticFigures = [
     outerElement: "Air",
     quality: "Stable",
     planet: "Saturn",
+    zodiac: "Aquarius",
   },
 
 ];
