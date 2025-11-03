@@ -52,6 +52,9 @@ export const geomanticFigures = [
     quality: "Mobile",
     planet: "Mars",
     zodiac: "Aries",
+    strengthenedIn: [1],
+    weakenedIN: [7],
+    anatomy: "head",
 
   },
   {

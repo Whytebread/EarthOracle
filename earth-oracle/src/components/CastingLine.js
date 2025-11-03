@@ -1,47 +1,38 @@
 import React, { useState } from "react";
 
-const CastingLine = ({ onComplete }) => {
-  const [dots, setDots] = useState([]);
-  const [finished, setFinished] = useState(false);
+const CastingLine = ({ onLineComplete }) => {
+  const [dice, setDice] = useState([]);
 
-  const handleClick = () => {
-    if (finished) return;
-    setDots([...dots, { id: Date.now() }]);
-  };
-
-  const handleFinish = () => {
-    if (finished || dots.length < 12) return;
-    const result = dots.length % 2 === 0 ? 0 : 1;
-    setFinished(true);
-    onComplete(result);
+  const rollDice = () => {
+    const results = [1, 2, 3, 4].map(() => Math.ceil(Math.random() * 6));
+    setDice(results);
+    const parity = results.map(r => r % 2 === 0 ? 0 : 1); 
+    onLineComplete(parity);
   };
 
   return (
-    <div className="flex flex-col items-center mb-4">
-      <div
-        onClick={handleClick}
-        className={`w-48 min-h-[4rem] border-2 border-emerald-500 rounded-lg flex flex-wrap justify-center items-center cursor-pointer p-2 transition-all ${
-          finished ? "opacity-50" : "hover:bg-emerald-800/30"
-        }`}
+    <div className="flex flex-col items-center gap-4">
+      <button
+        onClick={rollDice}
+        className="px-6 py-3 bg-amber-600 text-white rounded-lg shadow hover:bg-amber-700 transition"
       >
-        {dots.map((dot) => (
+        Roll Dice
+      </button>
+      <div className="flex gap-2">
+        {dice.map((value, i) => (
           <div
-            key={dot.id}
-            className="w-3 h-3 bg-white rounded-full m-1 animate-pulse"
-          ></div>
+            key={i}
+            className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold text-white ${
+              ["bg-red-500","bg-blue-500","bg-green-500","bg-yellow-500"][i]
+            }`}
+          >
+            {value}
+          </div>
         ))}
       </div>
-
-      {!finished && dots.length > 0 && (
-        <button
-          onClick={handleFinish}
-          className="mt-2 text-sm text-emerald-400 underline"
-        >
-          Finish Line
-        </button>
-      )}
     </div>
   );
 };
+
 
 export default CastingLine;
