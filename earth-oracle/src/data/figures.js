@@ -5,6 +5,7 @@ export const geomanticFigures = [
     innerElement: "Water",
     outerElement: "Water",
     quality: "Mobile",
+    planet: "Moon",
   },
   {
     name: "Populus",
@@ -12,6 +13,7 @@ export const geomanticFigures = [
     innerElement: "Water",
     outerElement: "Water",
     quality: "Stable",
+    planet: "Moon",
   },
   {
     name: "Fortuna Major",
@@ -19,6 +21,7 @@ export const geomanticFigures = [
     innerElement: "Earth",
     outerElement: "Fire",
     quality: "Stable",
+    planet: "Sun",
   },
   {
     name: "Fortuna Minor",
@@ -26,6 +29,7 @@ export const geomanticFigures = [
     innerElement: "Fire",
     outterElement: "Air",
     quality: "Mobile",
+    planet: "Sun",
   },
   {
     name: "Cauda Draconis",
@@ -33,6 +37,7 @@ export const geomanticFigures = [
     innerElement: "Fire",
     outerElement: "Fire",
     quality: "Mobile",
+    planet: "Lunar Node"
   },
   {
     name: "Puer",
@@ -40,6 +45,8 @@ export const geomanticFigures = [
     innerElement: "Air",
     outerElement: "Fire",
     quality: "Mobile",
+    planet: "Mars",
+
   },
   {
     name: "Puella",
@@ -47,6 +54,7 @@ export const geomanticFigures = [
     innerElement: "Water",
     outerElement: "Air",
     quality: "Stable",
+    planet: "Venus",
   },
   {
     name: "Carcer",
@@ -54,6 +62,7 @@ export const geomanticFigures = [
     innerElement: "Earth",
     outerElement: "Earth",
     quality: "Stable",
+    planet: "Saturn",
   },
   {
     name: "Amissio",
@@ -61,6 +70,7 @@ export const geomanticFigures = [
     innerElement: "Fire",
     outeElement: "Earth",
     quality: "Mobile",
+    planet: "Venus",
   },
   {
     name: "Laetitia",
@@ -68,6 +78,7 @@ export const geomanticFigures = [
     innerElement: "Fire",
     outerElement: "Water",
     quality: "Mobile",
+    planet: "Jupiter",
   },
   {
     name: "Caput Draconis",
@@ -75,6 +86,7 @@ export const geomanticFigures = [
     innerElement: "Earth",
     outerElement: "Earth",
     quality: "Stable",
+    planet: "Lunar Node",
   },
   {
     name: "Conjunctio",
@@ -82,6 +94,7 @@ export const geomanticFigures = [
     innerElement: "Air",
     outerElement: "Earth",
     quality: "Mobile",
+    planet: "Mercury",
   },
   {
     name: "Acquisitio",
@@ -89,6 +102,7 @@ export const geomanticFigures = [
     innerElement: "Air",
     outerElement: "Fire",
     quality: "Stable",
+    planet: "Jupiter",
   },
   {
     name: "Rubeus",
@@ -96,6 +110,7 @@ export const geomanticFigures = [
     innerElement: "Air",
     outerElement: "Water",
     quality: "Mobile",
+    planet: "Mars",
   },
   {
     name: "Albus",
@@ -103,6 +118,7 @@ export const geomanticFigures = [
     innerElement: "Water",
     outerElement: "Air",
     quality: "Stable",
+    planet: "Mercury",
   },
   {
     name: "Tristitia",
@@ -110,6 +126,7 @@ export const geomanticFigures = [
     innerElement: "Earth",
     outerElement: "Air",
     quality: "Stable",
+    planet: "Saturn",
   },
 
 ];
