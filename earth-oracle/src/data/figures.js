@@ -7,6 +7,9 @@ export const geomanticFigures = [
     quality: "Mobile",
     planet: "Moon",
     zodiac: "Cancer",
+    strengthenedIn: [4],
+    weakenedIN: [10],
+    atatomy: "the stomach"
   },
   {
     name: "Populus",
@@ -16,6 +19,9 @@ export const geomanticFigures = [
     quality: "Stable",
     planet: "Moon",
     zodiac: "Cancer",
+    strengthenedIn: [4],
+    weakenedIN: [10],
+    anatomy: "breasts, midriff",
   },
   {
     name: "Fortuna Major",
@@ -25,6 +31,9 @@ export const geomanticFigures = [
     quality: "Stable",
     planet: "Sun",
     zodiac: "Leo",
+    strengthenedIn: [5],
+    weakenedIN: [11],
+    anatomy: "heart, chest"
   },
   {
     name: "Fortuna Minor",
@@ -34,6 +43,9 @@ export const geomanticFigures = [
     quality: "Mobile",
     planet: "Sun",
     zodiac: "Leo",
+    strengthenedIn: [5],
+    weakenedIN: [11],
+    anatomy: "the spine",
   },
   {
     name: "Cauda Draconis",
@@ -43,6 +55,9 @@ export const geomanticFigures = [
     quality: "Mobile",
     planet: "Lunar Node",
     zodiac: "Sagittarius",
+    strengthenedIn: [9],
+    weakenedIN: [3],
+    anatomy: "the left arm",
   },
   {
     name: "Puer",
@@ -65,6 +80,9 @@ export const geomanticFigures = [
     quality: "Stable",
     planet: "Venus",
     zodiac: "Libra",
+    strengthenedIn: [7],
+    weakenedIN: [1],
+    anatomy: "kidneys, lower back"
   },
   {
     name: "Carcer",
@@ -74,6 +92,9 @@ export const geomanticFigures = [
     quality: "Stable",
     planet: "Saturn",
     zodiac: "Capricorn",
+    strengthenedIn: [10],
+    weakenedIN: [4],
+    anatomy: "knees, lower legs",
   },
   {
     name: "Amissio",
@@ -83,6 +104,9 @@ export const geomanticFigures = [
     quality: "Mobile",
     planet: "Venus",
     zodiac: "Taurus",
+    strengthenedIn: [2],
+    weakenedIN: [8],
+    anatomy: "neck, throat",
   },
   {
     name: "Laetitia",
@@ -92,6 +116,9 @@ export const geomanticFigures = [
     quality: "Mobile",
     planet: "Jupiter",
     zodiac: "Pisces",
+    strengthenedIn: [12],
+    weakenedIN: [6],
+    anatomy: "feet",
   },
   {
     name: "Caput Draconis",
@@ -101,6 +128,9 @@ export const geomanticFigures = [
     quality: "Stable",
     planet: "Lunar Node",
     zodiac: "Virgo",
+    strengthenedIn: [6],
+    weakenedIN: [12],
+    anatomy: "the right arm",
   },
   {
     name: "Conjunctio",
@@ -110,6 +140,9 @@ export const geomanticFigures = [
     quality: "Mobile",
     planet: "Mercury",
     zodiac: "Virgo",
+    strengthenedIn: [6],
+    weakenedIN: [12],
+    anatomy: "intestines, stomach",
   },
   {
     name: "Acquisitio",
@@ -119,6 +152,9 @@ export const geomanticFigures = [
     quality: "Stable",
     planet: "Jupiter",
     zodiac: "Sagittarius",
+    strengthenedIn: [9],
+    weakenedIN: [3],
+    anatomy: "hips, thighs",
   },
   {
     name: "Rubeus",
@@ -128,6 +164,9 @@ export const geomanticFigures = [
     quality: "Mobile",
     planet: "Mars",
     zodiac: "Scorpio",
+    strengthenedIn: [8],
+    weakenedIN: [2],
+    anatomy: "genitals, reproductive system",
   },
   {
     name: "Albus",
@@ -137,6 +176,9 @@ export const geomanticFigures = [
     quality: "Stable",
     planet: "Mercury",
     zodiac: "Gemini",
+    strengthenedIn: [3],
+    weakenedIN: [9],
+    anatomy: "shoulders, lungs",
   },
   {
     name: "Tristitia",
@@ -146,6 +188,9 @@ export const geomanticFigures = [
     quality: "Stable",
     planet: "Saturn",
     zodiac: "Aquarius",
+    strengthenedIn: [11],
+    weakenedIN: [5],
+    anatomy: "ankles",
   },
 
 ];
