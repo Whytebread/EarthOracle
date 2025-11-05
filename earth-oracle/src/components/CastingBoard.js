@@ -2,83 +2,79 @@
 import React, { useState } from "react";
 import DiceRoller from "./DiceRoller";
 import { geomanticFigures } from "../data/figures";
-
-const emptyMother = [[], [], [], []];
+import FigureCard from "./FigureCard";
 
 const CastingBoard = () => {
-  const [mothers, setMothers] = useState([[], [], [], []]);
-  const [currentMother, setCurrentMother] = useState(0);
-  const [currentLine, setCurrentLine] = useState(0);
-  const [finished, setFinished] = useState(false);
+  const [rolls, setRolls] = useState([]); // store dice results for each roll
+  const [mothers, setMothers] = useState([]); // store resulting 4 Mothers
 
-  const handleLineResult = (line) => {
-    const updated = [...mothers];
-    updated[currentMother][currentLine] = line;
-    setMothers(updated);
+  const handleDiceRoll = (values) => {
+    // values = array of 4 numbers, one for each element
+    setRolls((prev) => [...prev, values]);
 
-    // Move to next line/mother
-    if (currentLine < 3) {
-      setCurrentLine(currentLine + 1);
-    } else if (currentMother < 3) {
-      setCurrentMother(currentMother + 1);
-      setCurrentLine(0);
-    } else {
-      setFinished(true);
+    // once we have 4 rolls, generate Mothers
+    if (rolls.length === 3) {
+      const newRolls = [...rolls, values];
+      const newMothers = generateMothers(newRolls);
+      setMothers(newMothers);
     }
   };
 
+
+const generateMothers = (rolls) => {
+  return rolls.map((roll, i) => {
+    
+    const pattern = roll;
+
+    const figure = geomanticFigures.find(
+      (f) => f.pattern.every((bit, idx) => bit === pattern[idx])
+    );
+
+    if (!figure) {
+      console.warn(`Missing pattern: [${pattern.join(", ")}]`);
+    }
+
+    return {
+      name: figure ? figure.name : `Unknown ${i + 1}`,
+      pattern,
+    };
+  });
+};
+
   return (
-    <div className="flex flex-col items-center gap-8 p-6">
-      <h2 className="text-3xl font-semibold text-amber-900 mb-2">
-        {finished
-          ? "All Four Mothers Cast"
-          : `Casting Mother ${currentMother + 1}, Line ${currentLine + 1}`}
-      </h2>
+    <div
+      className="min-h-screen flex flex-col items-center justify-center bg-amber-50 p-6"
+      style={{
+        backgroundImage: "url('/parchment-texture.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      <h1 className="text-3xl font-bold mb-6 text-amber-800 drop-shadow-md">
+        Geomantic Casting Board
+      </h1>
 
-      {!finished && (
-        <p className="text-lg italic text-amber-800 mb-4">
-          Concentrate on your question and click “Cast Dice”.
-        </p>
+      {rolls.length < 4 ? (
+        <>
+          <p className="text-lg text-amber-900 mb-4">
+            Concentrate on your question and click the spindle to cast.
+          </p>
+          <DiceRoller onRollComplete={handleDiceRoll} disabled={rolls.length >= 4} />
+          <p className="mt-4 text-sm text-amber-800">
+            Rolls completed: {rolls.length}/4
+          </p>
+        </>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {mothers.map((mother, idx) => (
+            <FigureCard
+              key={idx}
+              title={`Mother ${idx + 1}`}
+              figure={mother}
+            />
+          ))}
+        </div>
       )}
-
-      <DiceRoller
-        onRollComplete={handleLineResult}
-        disabled={finished}
-      />
-
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8 w-full justify-items-center">
-        {mothers.map((mother, i) => (
-          <div
-            key={i}
-            className="border-4 border-amber-700 bg-[url('/parchment-texture.jpg')] bg-cover rounded-2xl p-4 w-40 h-56 flex flex-col justify-between shadow-lg"
-          >
-            <div className="flex flex-col justify-center items-center flex-grow gap-2">
-              {mother.length > 0 ? (
-                mother.map((line, j) => (
-                  <div
-                    key={j}
-                    className="flex justify-center gap-2"
-                  >
-                    {line.map((dot, k) => (
-                      <div
-                        key={k}
-                        className={`w-3 h-3 rounded-full ${
-                          dot ? "bg-amber-900" : "bg-amber-200"
-                        }`}
-                      ></div>
-                    ))}
-                  </div>
-                ))
-              ) : (
-                <p className="text-sm italic text-gray-600">—</p>
-              )}
-            </div>
-            <p className="text-center font-semibold text-amber-900">
-              {figureNames[i] || `Mother ${i + 1}`}
-            </p>
-          </div>
-        ))}
-      </div>
     </div>
   );
 };
