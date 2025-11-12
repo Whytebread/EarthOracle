@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import DiceRoller from "./DiceRoller";
 import FigureCard from "./FigureCard";
 import { geomanticFigures } from "../data/figures";
 
 const CastingBoard = () => {
-  // --- State for each generation ---
   const [mothers, setMothers] = useState([]);
   const [daughters, setDaughters] = useState([]);
   const [nieces, setNieces] = useState([]);
@@ -14,19 +13,21 @@ const CastingBoard = () => {
 
   // --- Dice roll callback for generating mothers ---
   const handleRollComplete = (pattern) => {
+    // pattern is [0/1,0/1,0/1,0/1] top->bottom
     const figure = geomanticFigures.find((f) =>
       f.pattern.every((p, i) => p === pattern[i])
     );
 
     const newMother = {
-      name: figure ? figure.name : `Unknown ${mothers.length + 1}`,
+      name: figure ? figure.name : `Unknown`,
       pattern,
     };
 
     setMothers((prev) => [...prev, newMother]);
   };
 
-  const addFigures = (f1, f2) => f1.map((line, idx) => (f1[idx] + f2[idx]) % 2);
+  // add binary figures line-by-line modulo 2
+  const addFigures = (f1, f2) => f1.map((line, idx) => (Number(f1[idx]) + Number(f2[idx])) % 2);
 
   // --- Generate Daughters ---
   useEffect(() => {
@@ -35,12 +36,12 @@ const CastingBoard = () => {
         mothers.map((mother) => mother.pattern[lineIdx])
       );
 
-      const derived = daughterPatterns.map((pattern, idx) => {
+      const derived = daughterPatterns.map((pattern) => {
         const figure = geomanticFigures.find((f) =>
           f.pattern.every((p, i) => p === pattern[i])
         );
         return {
-          name: figure ? figure.name : `Unknown D${idx + 1}`,
+          name: figure ? figure.name : "Unknown",
           pattern,
         };
       });
@@ -49,91 +50,112 @@ const CastingBoard = () => {
     }
   }, [mothers]);
 
-  // --- Generate Nieces, Witnesses, Judge ---
+  // --- Generate Nieces, Witnesses, Judge (map patterns to figure names) ---
   useEffect(() => {
     if (mothers.length === 4 && daughters.length === 4) {
-      // Nieces
-      const niecesGenerated = [
-        { name: "Niece 1", pattern: addFigures(mothers[0].pattern, mothers[1].pattern) },
-        { name: "Niece 2", pattern: addFigures(mothers[2].pattern, mothers[3].pattern) },
-        { name: "Niece 3", pattern: addFigures(daughters[0].pattern, daughters[1].pattern) },
-        { name: "Niece 4", pattern: addFigures(daughters[2].pattern, daughters[3].pattern) },
+      // Nieces: M1+M2, M3+M4, D1+D2, D3+D4
+      const niecesGeneratedPatterns = [
+        addFigures(mothers[0].pattern, mothers[1].pattern),
+        addFigures(mothers[2].pattern, mothers[3].pattern),
+        addFigures(daughters[0].pattern, daughters[1].pattern),
+        addFigures(daughters[2].pattern, daughters[3].pattern),
       ];
 
+      const niecesGenerated = niecesGeneratedPatterns.map((pattern) => {
+        const fig = geomanticFigures.find((f) => f.pattern.every((p, i) => p === pattern[i]));
+        return { name: fig ? fig.name : "Unknown", pattern };
+      });
       setNieces(niecesGenerated);
 
-      // Witnesses
-      const witnessesGenerated = [
-        { name: "Witness 1", pattern: addFigures(niecesGenerated[0].pattern, niecesGenerated[1].pattern) },
-        { name: "Witness 2", pattern: addFigures(niecesGenerated[2].pattern, niecesGenerated[3].pattern) },
+      // Witnesses: N1+N2, N3+N4
+      const witnessesGeneratedPatterns = [
+        addFigures(niecesGenerated[0].pattern, niecesGenerated[1].pattern),
+        addFigures(niecesGenerated[2].pattern, niecesGenerated[3].pattern),
       ];
 
+      const witnessesGenerated = witnessesGeneratedPatterns.map((pattern) => {
+        const fig = geomanticFigures.find((f) => f.pattern.every((p, i) => p === pattern[i]));
+        return { name: fig ? fig.name : "Unknown", pattern };
+      });
       setWitnesses(witnessesGenerated);
 
-      // Judge
-      setJudge({
-        name: "Judge",
-        pattern: addFigures(witnessesGenerated[0].pattern, witnessesGenerated[1].pattern),
-      });
+      // Judge: W1 + W2
+      const judgePattern = addFigures(witnessesGenerated[0].pattern, witnessesGenerated[1].pattern);
+      const judgeFig = geomanticFigures.find((f) => f.pattern.every((p, i) => p === judgePattern[i]));
+      setJudge({ name: judgeFig ? judgeFig.name : "Unknown", pattern: judgePattern });
     }
   }, [mothers, daughters]);
 
   const isDisabled = mothers.length >= 4;
 
-  // --- Helper to render a generation ---
-  const renderGeneration = (title, figures) => (
-    figures && figures.length > 0 && (
+  // helper to make titles: "Mother 1", "Daughter 2", etc.
+  const getCardTitle = (rowTitle, idx) => {
+    if (rowTitle === "Judge") return "Judge";
+
+    const singularMap = {
+      Mothers: "Mother",
+      Daughters: "Daughter",
+      Nieces: "Niece",
+      Witnesses: "Witness",
+    };
+
+    const singular = singularMap[rowTitle] || rowTitle;
+    return `${singular} ${idx + 1}`;
+  };
+
+  // render one row, right-to-left
+  const renderRow = (figures, rowTitle, singularTitle) => {
+    if (!figures || figures.length === 0) return null;
+
+    return (
       <div>
         <h2 className="text-xl font-bold text-amber-900 mt-6 mb-2 text-center">
-          {title}
+          {rowTitle}
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 justify-center">
-          {figures.map((figure, idx) => (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 justify-items-center">
+          {[...figures].reverse().map((figure, idx) => (
             <motion.div
               key={idx}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: idx * 0.2 }}
+              transition={{ duration: 0.8 }}
             >
-              <FigureCard title={`${title} ${idx + 1}`} figure={figure} />
+              <FigureCard
+                title={getCardTitle(rowTitle, figures.length - 1 - idx)}
+                figure={figure}
+              />
             </motion.div>
           ))}
         </div>
       </div>
-    )
-  );
+    );
+  };
 
   return (
-    <div className="flex flex-col items-center gap-10">
+    <div className="flex flex-col items-center gap-8 w-full">
       <DiceRoller onRollComplete={handleRollComplete} disabled={isDisabled} />
 
-      {/* Mothers */}
-      {renderGeneration("Mother", mothers)}
+      <div className="w-full max-w-6xl mt-6">
+        {renderRow(mothers, "Mothers", "Mother")}
+        {renderRow(daughters, "Daughters", "Daughter")}
+        {renderRow(nieces, "Nieces", "Niece")}
+        {renderRow(witnesses, "Witnesses", "Witness")}
 
-      {/* Daughters */}
-      {renderGeneration("Daughter", daughters)}
-
-      {/* Nieces */}
-      {renderGeneration("Niece", nieces)}
-
-      {/* Witnesses */}
-      {renderGeneration("Witness", witnesses)}
-
-      {/* Judge */}
-      {judge && (
-        <div className="mt-6">
-          <h2 className="text-xl font-bold text-amber-900 mb-2 text-center">Judge</h2>
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <FigureCard title="Judge" figure={judge} />
-          </motion.div>
-        </div>
-      )}
+        {judge && (
+          <div className="mt-8 text-center">
+            <h2 className="text-xl font-bold text-amber-900 mb-2">Judge</h2>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="flex justify-center"
+            >
+              <FigureCard title="Judge" figure={judge} />
+            </motion.div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
-
 export default CastingBoard;
