@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 
@@ -14,12 +13,15 @@ const DiceRoller = ({ onRollComplete, disabled }) => {
   const [results, setResults] = useState([null, null, null, null]);
 
   const rollDice = () => {
-    if (disabled) return;
+    if (disabled || rolling) return;
     setRolling(true);
+
     const newResults = diceColors.map(() => Math.ceil(Math.random() * 6));
+
     setTimeout(() => {
       setResults(newResults);
       setRolling(false);
+
       const line = newResults.map((num) => (num % 2 === 0 ? 0 : 1));
       onRollComplete(line);
     }, 1200);
