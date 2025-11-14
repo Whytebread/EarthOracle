@@ -126,35 +126,45 @@ const CastingBoard = () => {
   };
 
   /* ---------- NIECES ROW ---------- */
-  const NiecesRow = () => {
-    if (nieces.length < 4) return null;
-    return (
-      <div className="w-full mt-0" style={{ maxWidth: ROW_W }}>
-        <div
-          className="grid grid-cols-4 gap-2 justify-center mx-auto"
-          style={{ direction: "rtl" }}
-        >
-          {nieces.map((fig, i) => (
-            <Card key={i} fig={fig} title={`Niece ${i + 1}`} idx={i} />
-          ))}
-        </div>
-      </div>
-    );
-  };
+const NiecesRow = () => {
+  if (nieces.length < 4) return null;
 
-  /* ---------- COURT ROW ---------- */
-  const CourtRow = () => {
-    if (!judge || witnesses.length < 2) return null;
-    return (
-      <div className="w-full mt-0" style={{ maxWidth: ROW_W }}>
-        <div className="grid grid-cols-3 gap-2 justify-center mx-auto">
-          <Card fig={witnesses[1]} title="Left Witness" idx={0} />
-          <Card fig={judge} title="Judge" idx={1} />
-          <Card fig={witnesses[0]} title="Right Witness" idx={2} />
-        </div>
+  return (
+    <div className="w-full mt-0" style={{ maxWidth: ROW_W }}>
+      <div
+        className="grid gap-2 justify-center mx-auto"
+        style={{
+          direction: "rtl",
+          gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+        }}
+      >
+        {nieces.map((fig, i) => (
+          <Card key={i} fig={fig} title={`Niece ${i + 1}`} idx={i} />
+        ))}
       </div>
-    );
-  };
+    </div>
+  );
+};
+  /* ---------- COURT ROW ---------- */
+const CourtRow = () => {
+  if (!judge || witnesses.length < 2) return null;
+
+  return (
+    <div className="w-full mt-0" style={{ maxWidth: ROW_W }}>
+      <div
+        className="grid gap-2 justify-center mx-auto"
+        style={{
+          direction: "rtl",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+        }}
+      >
+        <Card fig={witnesses[1]} title="Left Witness" idx={0} />
+        <Card fig={judge} title="Judge" idx={1} />
+        <Card fig={witnesses[0]} title="Right Witness" idx={2} />
+      </div>
+    </div>
+  );
+};
 
   /* ---------- MAIN RENDER ---------- */
   return (
