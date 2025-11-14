@@ -1,8 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import DiceRoller from "./DiceRoller";
 import FigureCard from "./FigureCard";
 import { geomanticFigures } from "../data/figures";
+
+const CARD_W = 160;               // FigureCard width
+const GAP = 8;                    // gap-2 = 0.5rem = 8px
+const ROW_W = 8 * CARD_W + 7 * GAP; // full shield width (8 cards)
 
 const CastingBoard = () => {
   const [mothers, setMothers] = useState([]);
@@ -11,193 +15,157 @@ const CastingBoard = () => {
   const [witnesses, setWitnesses] = useState([]);
   const [judge, setJudge] = useState(null);
 
-  /* ----------------- DICE ROLL → GENERATE MOTHERS ----------------- */
-  const handleRollComplete = (pattern) => {
-    const figure = geomanticFigures.find((f) =>
-      f.pattern.every((p, i) => p === pattern[i])
+  /* ---------- DICE → MOTHER ---------- */
+  const handleRoll = (line) => {
+    const fig = geomanticFigures.find((f) =>
+      f.pattern.every((v, i) => v === line[i])
     );
-
-    const newMother = {
-      name: figure ? figure.name : "Unknown",
-      pattern,
-    };
-
-    setMothers((prev) => [...prev, newMother]);
+    setMothers((prev) => [
+      ...prev,
+      { name: fig ? fig.name : "??", pattern: line },
+    ]);
   };
 
-  const addFigures = (f1, f2) =>
-    f1.map((line, idx) => (Number(f1[idx]) + Number(f2[idx])) % 2);
+  const xor = (a, b) => a.map((v, i) => (v + b[i]) % 2);
 
-  /* ----------------------- GENERATE DAUGHTERS ----------------------- */
+  /* ---------- DERIVE EVERYTHING ---------- */
   useEffect(() => {
-    if (mothers.length === 4) {
-      const daughterPatterns = [0, 1, 2, 3].map((lineIdx) =>
-        mothers.map((m) => m.pattern[lineIdx])
+    if (mothers.length !== 4) return;
+    const dPatterns = [0, 1, 2, 3].map((row) =>
+      mothers.map((m) => m.pattern[row])
+    );
+    const derived = dPatterns.map((p) => {
+      const f = geomanticFigures.find((g) =>
+        g.pattern.every((v, i) => v === p[i])
       );
-
-      const derived = daughterPatterns.map((pattern) => {
-        const f = geomanticFigures.find((g) =>
-          g.pattern.every((p, i) => p === pattern[i])
-        );
-        return { name: f ? f.name : "Unknown", pattern };
-      });
-
-      setDaughters(derived);
-    }
+      return { name: f ? f.name : "??", pattern: p };
+    });
+    setDaughters(derived);
   }, [mothers]);
 
-  /* ----------- GENERATE NIECES → WITNESSES → JUDGE ---------------- */
   useEffect(() => {
     if (mothers.length !== 4 || daughters.length !== 4) return;
 
-    const niecePatterns = [
-      addFigures(mothers[0].pattern, mothers[1].pattern),
-      addFigures(mothers[2].pattern, mothers[3].pattern),
-      addFigures(daughters[0].pattern, daughters[1].pattern),
-      addFigures(daughters[2].pattern, daughters[3].pattern),
+    const n = [
+      xor(mothers[0].pattern, mothers[1].pattern),
+      xor(mothers[2].pattern, mothers[3].pattern),
+      xor(daughters[0].pattern, daughters[1].pattern),
+      xor(daughters[2].pattern, daughters[3].pattern),
     ];
-
-    const niecesGen = niecePatterns.map((p) => {
-      const f = geomanticFigures.find((g) => g.pattern.every((x, i) => x === p[i]));
-      return { name: f ? f.name : "Unknown", pattern: p };
+    const niecesGen = n.map((p) => {
+      const f = geomanticFigures.find((g) =>
+        g.pattern.every((v, i) => v === p[i])
+      );
+      return { name: f ? f.name : "??", pattern: p };
     });
-
     setNieces(niecesGen);
 
-    const witnessPatterns = [
-      addFigures(niecesGen[0].pattern, niecesGen[1].pattern),
-      addFigures(niecesGen[2].pattern, niecesGen[3].pattern),
+    const w = [
+      xor(niecesGen[0].pattern, niecesGen[1].pattern), // Right
+      xor(niecesGen[2].pattern, niecesGen[3].pattern), // Left
     ];
-
-    const witnessesGen = witnessPatterns.map((p) => {
-      const f = geomanticFigures.find((g) => g.pattern.every((x, i) => x === p[i]));
-      return { name: f ? f.name : "Unknown", pattern: p };
+    const witnessesGen = w.map((p) => {
+      const f = geomanticFigures.find((g) =>
+        g.pattern.every((v, i) => v === p[i])
+      );
+      return { name: f ? f.name : "??", pattern: p };
     });
-
     setWitnesses(witnessesGen);
 
-    const judgePattern = addFigures(witnessesGen[0].pattern, witnessesGen[1].pattern);
+    const j = xor(witnessesGen[0].pattern, witnessesGen[1].pattern);
     const judgeFig = geomanticFigures.find((g) =>
-      g.pattern.every((p, i) => p === judgePattern[i])
+      g.pattern.every((v, i) => v === j[i])
     );
-
-    setJudge({
-      name: judgeFig ? judgeFig.name : "Unknown",
-      pattern: judgePattern,
-    });
+    setJudge({ name: judgeFig ? judgeFig.name : "??", pattern: j });
   }, [mothers, daughters]);
 
-  const isDisabled = mothers.length >= 4;
+  const disabled = mothers.length >= 4;
 
-  /* ----------------------- REUSABLE RENDERER ----------------------- */
-  const renderFigure = (figure, title, idx, scale = 1) => (
+  /* ---------- REUSABLE CARD ---------- */
+  const Card = ({ fig, title, idx }) => (
     <motion.div
-      key={title + idx}
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: idx * 0.12 }}
-      className={`transform ${scale !== 1 ? `scale-[${scale}]` : ""}`}
+      layout
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, delay: idx * 0.07 }}
+      className="flex justify-center"
     >
-      <FigureCard title={title} figure={figure} />
+      <FigureCard title={title} figure={fig} />
     </motion.div>
   );
 
-  /* ----------------------- MOTHERS ANIMATION ROW ----------------------- */
-  const renderMothersRolling = () => {
-    if (mothers.length === 0) return null;
+  /* ---------- TOP ROW (mothers → mothers+daughters) ---------- */
+  const TopRow = () => {
+    const isFull = mothers.length === 4 && daughters.length === 4;
+    const items = isFull
+      ? [...mothers, ...daughters]
+      : mothers; // only show what exists
+
+    const cols = isFull ? 8 : mothers.length || 1; // 1 prevents empty grid
 
     return (
-      <div className="mt-6 mb-4">
-        <h2 className="text-lg font-semibold text-center text-amber-900">
-          Lines completed: {mothers.length}/4
-        </h2>
-
-        {/* Show generated mothers one by one */}
-        <div className="grid grid-cols-4 gap-4 justify-items-center mt-3">
-          {mothers.map((m, idx) =>
-            renderFigure(m, `Mother ${idx + 1}`, idx)
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  /* ----------------------- SHIELD ROWS ----------------------- */
-  const renderTopRow = () => {
-    if (mothers.length < 4 || daughters.length < 4) return null;
-
-    const combined = [...mothers, ...daughters];
-
-    return (
-      <div className="w-full mb-10 mt-8">
+      <motion.div
+        layout
+        className="w-full"
+        style={{ maxWidth: ROW_W }}
+      >
         <div
-          className="grid grid-cols-8 gap-[2px] justify-items-center"
-          style={{ direction: "rtl" }}
+          className={`grid gap-2 justify-center mx-auto`}
+          style={{
+            direction: "rtl",
+            gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
+          }}
         >
-          {combined.map((fig, idx) => {
-            const title =
-              idx < 4 ? `Mother ${idx + 1}` : `Daughter ${idx - 3}`;
-            return renderFigure(fig, title, idx);
+          {items.map((fig, i) => {
+            const label = i < 4 ? `Mother ${i + 1}` : `Daughter ${i - 3}`;
+            return <Card key={i} fig={fig} title={label} idx={i} />;
           })}
         </div>
-      </div>
+      </motion.div>
     );
   };
 
-  const renderNieces = () => {
+  /* ---------- NIECES ROW ---------- */
+  const NiecesRow = () => {
     if (nieces.length < 4) return null;
-
     return (
-      <div className="w-full mb-12">
+      <div className="w-full mt-0" style={{ maxWidth: ROW_W }}>
         <div
-          className="grid grid-cols-4 gap-[2px] justify-items-center"
+          className="grid grid-cols-4 gap-2 justify-center mx-auto"
           style={{ direction: "rtl" }}
         >
-          {nieces.map((fig, idx) =>
-            renderFigure(fig, `Niece ${idx + 1}`, idx, 1.7) // 1.7x size
-          )}
+          {nieces.map((fig, i) => (
+            <Card key={i} fig={fig} title={`Niece ${i + 1}`} idx={i} />
+          ))}
         </div>
       </div>
     );
   };
 
-  const renderWitnesses = () => {
-    if (witnesses.length < 2) return null;
-
+  /* ---------- COURT ROW ---------- */
+  const CourtRow = () => {
+    if (!judge || witnesses.length < 2) return null;
     return (
-      <div className="w-full mb-10">
-        <div
-          className="grid grid-cols-2 gap-[2px] justify-items-center"
-          style={{ direction: "rtl" }}
-        >
-          {witnesses.map((fig, idx) =>
-            renderFigure(fig, `Witness ${idx + 1}`, idx, 1.2)
-          )}
+      <div className="w-full mt-0" style={{ maxWidth: ROW_W }}>
+        <div className="grid grid-cols-3 gap-2 justify-center mx-auto">
+          <Card fig={witnesses[1]} title="Left Witness" idx={0} />
+          <Card fig={judge} title="Judge" idx={1} />
+          <Card fig={witnesses[0]} title="Right Witness" idx={2} />
         </div>
       </div>
     );
   };
 
-  const renderJudge = () => {
-    if (!judge) return null;
-
-    return (
-      <div className="w-full flex justify-center mt-4 mb-12">
-        {renderFigure(judge, "Judge", 0, 1.3)}
-      </div>
-    );
-  };
-
-  /* ----------------------- RENDER ----------------------- */
+  /* ---------- MAIN RENDER ---------- */
   return (
-    <div className="w-full max-w-6xl mx-auto p-4">
-      <DiceRoller onRollComplete={handleRollComplete} disabled={isDisabled} />
+    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-amber-100 p-6">
+      <div className="max-w-7xl mx-auto space-y-0">
+        <DiceRoller onRollComplete={handleRoll} disabled={disabled} />
 
-      {renderMothersRolling()}
-      {renderTopRow()}
-      {renderNieces()}
-      {renderWitnesses()}
-      {renderJudge()}
+        <TopRow />
+        <NiecesRow />
+        <CourtRow />
+      </div>
     </div>
   );
 };
