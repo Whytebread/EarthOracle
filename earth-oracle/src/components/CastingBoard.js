@@ -89,58 +89,49 @@ const CastingBoard = () => {
   const isDisabled = mothers.length >= 4;
 
   // helper to make titles: "Mother 1", "Daughter 2", etc.
-  const getCardTitle = (rowTitle, idx) => {
-    if (rowTitle === "Judge") return "Judge";
+const renderRow = (figures, rowTitle, singularTitle) => {
+  if (!figures || figures.length === 0) return null;
 
-    const singularMap = {
-      Mothers: "Mother",
-      Daughters: "Daughter",
-      Nieces: "Niece",
-      Witnesses: "Witness",
-    };
+  return (
+    <div>
+      <h2 className="text-xl font-bold text-amber-900 mt-6 mb-2 text-center">
+        {rowTitle}
+      </h2>
 
-    const singular = singularMap[rowTitle] || rowTitle;
-    return `${singular} ${idx + 1}`;
-  };
-
-  // render one row, right-to-left
-  const renderRow = (figures, rowTitle, singularTitle) => {
-    if (!figures || figures.length === 0) return null;
-
-    return (
-      <div>
-        <h2 className="text-xl font-bold text-amber-900 mt-6 mb-2 text-center">
-          {rowTitle}
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 justify-items-center">
-          {[...figures].reverse().map((figure, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <FigureCard
-                title={getCardTitle(rowTitle, figures.length - 1 - idx)}
-                figure={figure}
-              />
-            </motion.div>
-          ))}
-        </div>
+      {/* RTL grid so cards render right → left visually */}
+      <div
+        className="grid grid-cols-2 md:grid-cols-4 gap-6 justify-items-center"
+        style={{ direction: "rtl" }}
+      >
+        {figures.map((figure, idx) => (
+          <motion.div
+            key={idx}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: idx * 0.15 }}
+          >
+            <FigureCard
+              title={`${singularTitle} ${idx + 1}`}
+              figure={figure}
+            />
+          </motion.div>
+        ))}
       </div>
-    );
-  };
+    </div>
+  );
+};
 
   return (
     <div className="flex flex-col items-center gap-8 w-full">
+      {/* Dice roller */}
       <DiceRoller onRollComplete={handleRollComplete} disabled={isDisabled} />
 
+      {/* All rows */}
       <div className="w-full max-w-6xl mt-6">
         {renderRow(mothers, "Mothers", "Mother")}
         {renderRow(daughters, "Daughters", "Daughter")}
         {renderRow(nieces, "Nieces", "Niece")}
         {renderRow(witnesses, "Witnesses", "Witness")}
-
         {judge && (
           <div className="mt-8 text-center">
             <h2 className="text-xl font-bold text-amber-900 mb-2">Judge</h2>
