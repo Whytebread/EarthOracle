@@ -1,12 +1,14 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const FigureCard = ({ title, figure }) => {
+const FigureCard = ({ title, figure, scale = 1 }) => {
   return (
-    <div className="bg-amber-100 border-4 border-amber-700 rounded-xl p-4 shadow-lg w-40 text-center flex flex-col justify-between">
-      {/* TOP: role title */}
-      <div>
-        <h3 className="font-bold text-amber-900 mb-1">{title}</h3>
+    <div
+      className="bg-white border rounded-xl shadow p-2 flex flex-col items-center"
+      style={{ transform: `scale(${scale})`, transformOrigin: "center" }}
+    >
+      <div className="text-sm font-semibold">{title}</div>
+      <div className="mt-1 text-xs text-gray-600">{figure?.name}
 
         {/* DOTS: slower sequential animation */}
         <div className="flex flex-col items-center gap-1 mt-2">
