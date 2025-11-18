@@ -4,177 +4,219 @@ import DiceRoller from "./DiceRoller";
 import FigureCard from "./FigureCard";
 import { geomanticFigures } from "../data/figures";
 
-const CARD_W = 160;               // FigureCard width
-const GAP = 8;                    // gap-2 = 0.5rem = 8px
-const ROW_W = 8 * CARD_W + 7 * GAP; // full shield width (8 cards)
+/* --- SHARED LAYOUT CONSTANTS --- */
+const CARD_W = 160;              // base card width
+const GAP = 8;
+const ROW_W = 8 * CARD_W + 7 * GAP; // exactly 8 card-widths
 
-const CastingBoard = () => {
+export default function CastingBoard() {
   const [mothers, setMothers] = useState([]);
   const [daughters, setDaughters] = useState([]);
   const [nieces, setNieces] = useState([]);
   const [witnesses, setWitnesses] = useState([]);
   const [judge, setJudge] = useState(null);
 
-  /* ---------- DICE → MOTHER ---------- */
-  const handleRoll = (line) => {
+  /* ------------------------------ */
+  /*       ADD A MOTHER FROM DICE   */
+  /* ------------------------------ */
+  const handleRoll = (pattern) => {
     const fig = geomanticFigures.find((f) =>
-      f.pattern.every((v, i) => v === line[i])
+      f.pattern.every((v, i) => v === pattern[i])
     );
     setMothers((prev) => [
       ...prev,
-      { name: fig ? fig.name : "??", pattern: line },
+      { name: fig ? fig.name : "Unknown", pattern },
     ]);
   };
 
   const xor = (a, b) => a.map((v, i) => (v + b[i]) % 2);
 
-  /* ---------- DERIVE EVERYTHING ---------- */
+  /* ------------------------------ */
+  /*         DERIVE DAUGHTERS       */
+  /* ------------------------------ */
   useEffect(() => {
     if (mothers.length !== 4) return;
-    const dPatterns = [0, 1, 2, 3].map((row) =>
-      mothers.map((m) => m.pattern[row])
-    );
-    const derived = dPatterns.map((p) => {
-      const f = geomanticFigures.find((g) =>
-        g.pattern.every((v, i) => v === p[i])
+
+    const derived = [0, 1, 2, 3].map((row) => {
+      const pattern = mothers.map((m) => m.pattern[row]);
+      const fig = geomanticFigures.find((g) =>
+        g.pattern.every((v, i) => v === pattern[i])
       );
-      return { name: f ? f.name : "??", pattern: p };
+      return { name: fig ? fig.name : "Unknown", pattern };
     });
+
     setDaughters(derived);
   }, [mothers]);
 
+  /* ------------------------------ */
+  /*       NIECES / WITNESS / JUDGE */
+  /* ------------------------------ */
   useEffect(() => {
     if (mothers.length !== 4 || daughters.length !== 4) return;
 
-    const n = [
+    const nieceP = [
       xor(mothers[0].pattern, mothers[1].pattern),
       xor(mothers[2].pattern, mothers[3].pattern),
       xor(daughters[0].pattern, daughters[1].pattern),
       xor(daughters[2].pattern, daughters[3].pattern),
     ];
-    const niecesGen = n.map((p) => {
+
+    const niecesGen = nieceP.map((p) => {
       const f = geomanticFigures.find((g) =>
         g.pattern.every((v, i) => v === p[i])
       );
-      return { name: f ? f.name : "??", pattern: p };
+      return { name: f ? f.name : "Unknown", pattern: p };
     });
+
     setNieces(niecesGen);
 
-    const w = [
+    const witnessP = [
       xor(niecesGen[0].pattern, niecesGen[1].pattern), // Right
       xor(niecesGen[2].pattern, niecesGen[3].pattern), // Left
     ];
-    const witnessesGen = w.map((p) => {
+
+    const witnessesGen = witnessP.map((p) => {
       const f = geomanticFigures.find((g) =>
         g.pattern.every((v, i) => v === p[i])
       );
-      return { name: f ? f.name : "??", pattern: p };
+      return { name: f ? f.name : "Unknown", pattern: p };
     });
+
     setWitnesses(witnessesGen);
 
-    const j = xor(witnessesGen[0].pattern, witnessesGen[1].pattern);
-    const judgeFig = geomanticFigures.find((g) =>
-      g.pattern.every((v, i) => v === j[i])
+    const jPattern = xor(witnessesGen[0].pattern, witnessesGen[1].pattern);
+    const jFig = geomanticFigures.find((g) =>
+      g.pattern.every((v, i) => v === jPattern[i])
     );
-    setJudge({ name: judgeFig ? judgeFig.name : "??", pattern: j });
+    setJudge({ name: jFig ? jFig.name : "Unknown", pattern: jPattern });
   }, [mothers, daughters]);
 
   const disabled = mothers.length >= 4;
 
-  /* ---------- REUSABLE CARD ---------- */
-const Card = ({ fig, title, idx, scale = 1 }) => (
-  <motion.div
-    layout
-    initial={{ opacity: 0, scale: 0.8 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.4, delay: idx * 0.07 }}
-    className="flex justify-center"
+  /* ------------------------------ */
+  /*       REUSABLE CARD WRAPPER    */
+  /* ------------------------------ */
+  const Card = ({ fig, title, idx, width }) => (
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.35, delay: idx * 0.07 }}
+      style={{ width }}
+      className="flex flex-col items-center"
+    >
+      <div className="text-center font-semibold text-amber-900 mb-1">
+        {title}
+      </div>
+      <FigureCard title={title} figure={fig} />
+    </motion.div>
+  );
+
+ const SHIELD_WIDTH = 1100;
+
+const Row = ({ children }) => (
+  <div 
+    className="mx-auto mt-6"
+    style={{ width: SHIELD_WIDTH }}
   >
-    <FigureCard title={title} figure={fig} scale={scale} />
-  </motion.div>
+    {children}
+  </div>
 );
-  /* ---------- TOP ROW (mothers → mothers+daughters) ---------- */
-  const TopRow = () => {
-    const isFull = mothers.length === 4 && daughters.length === 4;
-    const items = isFull
+
+/* ---------- TOP ROW: 8 COLUMNS ---------- */
+const TopRow = () => {
+  const items =
+    mothers.length === 4 && daughters.length === 4
       ? [...mothers, ...daughters]
-      : mothers; // only show what exists
+      : mothers;
 
-    const cols = isFull ? 8 : mothers.length || 1; // 1 prevents empty grid
-
-    return (
-      <motion.div
-        layout
-        className="w-full"
-        style={{ maxWidth: ROW_W }}
+  return (
+    <Row>
+      <div
+        className="grid gap-4"
+        style={{
+          gridTemplateColumns: `repeat(${items.length}, 1fr)`,
+          direction: "rtl",
+        }}
       >
-        <div
-          className={`grid gap-2 justify-center mx-auto`}
-          style={{
-            direction: "rtl",
-            gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))`,
-          }}
-        >
-          {items.map((fig, i) => {
-            const label = i < 4 ? `Mother ${i + 1}` : `Daughter ${i - 3}`;
-            return <Card key={i} fig={fig} title={label} idx={i} />;
-          })}
-        </div>
-      </motion.div>
-    );
-  };
+        {items.map((fig, i) => {
+          const label = i < 4 ? `Mother ${i + 1}` : `Daughter ${i - 3}`;
+          return (
+            <motion.div
+              key={label}
+              initial={{ opacity: 0, scale: 0.7 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: i * 0.08 }}
+              className="w-full"
+            >
+              <FigureCard title={label} figure={fig} />
+            </motion.div>
+          );
+        })}
+      </div>
+    </Row>
+  );
+};
 
-  /* ---------- NIECES ROW ---------- */
+/* ---------- NIECES ROW: 4 BIGGER CARDS ---------- */
 const NiecesRow = () => {
   if (nieces.length < 4) return null;
 
   return (
-    <div className="w-full mt-0" style={{ maxWidth: ROW_W }}>
+    <Row>
       <div
-        className="grid gap-2 justify-center mx-auto"
+        className="grid gap-4"
         style={{
+          gridTemplateColumns: "repeat(4, 1fr)",
           direction: "rtl",
-          gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
         }}
       >
         {nieces.map((fig, i) => (
-          <Card
+          <motion.div
             key={i}
-            fig={fig}
-            title={`Niece ${i + 1}`}
-            idx={i}
-            scale={2}   
-          />
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, delay: i * 0.08 }}
+            className="w-full"
+          >
+            <FigureCard title={`Niece ${i + 1}`} figure={fig} />
+          </motion.div>
         ))}
       </div>
-    </div>
+    </Row>
   );
 };
-  /* ---------- COURT ROW ---------- */
+
+/* ---------- COURT ROW: 3 COLUMNS ---------- */
 const CourtRow = () => {
   if (!judge || witnesses.length < 2) return null;
 
   return (
-    <div className="w-full mt-0" style={{ maxWidth: ROW_W }}>
+    <Row>
       <div
-        className="grid gap-2 justify-center mx-auto"
+        className="grid gap-4"
         style={{
+          gridTemplateColumns: "repeat(3, 1fr)",
           direction: "rtl",
-          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
         }}
       >
-        <Card fig={witnesses[1]} title="Left Witness" idx={0} />
-        <Card fig={judge} title="Judge" idx={1} />
-        <Card fig={witnesses[0]} title="Right Witness" idx={2} />
+        <FigureCard title="Left Witness" figure={witnesses[1]} />
+        <FigureCard title="Judge" figure={judge} />
+        <FigureCard title="Right Witness" figure={witnesses[0]} />
       </div>
-    </div>
+    </Row>
   );
 };
 
-  /* ---------- MAIN RENDER ---------- */
+
+  /* ------------------------------ */
+  /*           MAIN RENDER          */
+  /* ------------------------------ */
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-amber-100 p-6">
-      <div className="max-w-7xl mx-auto space-y-0">
+      <div className="max-w-7xl mx-auto">
+
+        {/* Dice / lines remaining */}
         <DiceRoller onRollComplete={handleRoll} disabled={disabled} />
 
         <TopRow />
@@ -183,6 +225,4 @@ const CourtRow = () => {
       </div>
     </div>
   );
-};
-
-export default CastingBoard;
+}

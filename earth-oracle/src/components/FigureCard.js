@@ -1,14 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-const FigureCard = ({ title, figure, scale = 1 }) => {
+const FigureCard = ({ title, figure }) => {
   return (
-    <div
-      className="bg-white border rounded-xl shadow p-2 flex flex-col items-center"
-      style={{ transform: `scale(${scale})`, transformOrigin: "center" }}
-    >
-      <div className="text-sm font-semibold">{title}</div>
-      <div className="mt-1 text-xs text-gray-600">{figure?.name}
+    <div className="bg-white rounded-xl shadow p-3 w-full flex flex-col items-center">
+      <div className="font-bold text-center text-amber-800 mb-2">
+        {title}
 
         {/* DOTS: slower sequential animation */}
         <div className="flex flex-col items-center gap-1 mt-2">
@@ -40,9 +37,9 @@ const FigureCard = ({ title, figure, scale = 1 }) => {
       </div>
 
       {/* BOTTOM: figure name */}
-      <p className="mt-3 font-serif text-base font-semibold text-amber-900 italic">
+      <div className="text-sm text-center text-amber-700 mt-2">
         {figure.name}
-      </p>
+      </div>
     </div>
   );
 };
