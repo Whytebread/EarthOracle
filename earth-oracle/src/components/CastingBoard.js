@@ -112,102 +112,94 @@ export default function CastingBoard() {
     </motion.div>
   );
 
- const SHIELD_WIDTH = 1100;
+  const SHIELD_WIDTH = 1100;
 
-const Row = ({ children }) => (
-  <div 
-    className="mx-auto mt-6"
-    style={{ width: SHIELD_WIDTH }}
-  >
-    {children}
-  </div>
-);
+  const Row = ({ children }) => (
+    <div
+      className="mx-auto mt-6"
+      style={{ width: SHIELD_WIDTH }}
+    >
+      {children}
+    </div>
+  );
 
-/* ---------- TOP ROW: 8 COLUMNS ---------- */
-const TopRow = () => {
-  const items =
-    mothers.length === 4 && daughters.length === 4
-      ? [...mothers, ...daughters]
-      : mothers;
+  /* ---------- TOP ROW: 8 COLUMNS ---------- */
+  const TopRow = () => {
+    const items =
+      mothers.length === 4 && daughters.length === 4
+        ? [...mothers, ...daughters]
+        : mothers;
 
-  return (
-    <Row>
-      <div
-        className="grid gap-4"
-        style={{
-          gridTemplateColumns: `repeat(${items.length}, 1fr)`,
-          direction: "rtl",
-        }}
-      >
-        {items.map((fig, i) => {
-          const label = i < 4 ? `Mother ${i + 1}` : `Daughter ${i - 3}`;
-          return (
+    return (
+      <Row>
+        <div
+          className="grid gap-4"
+          style={{
+            gridTemplateColumns: `repeat(${items.length}, 1fr)`,
+            direction: "rtl",
+          }}
+        >
+          {items.map((fig, i) => {
+            const label = i < 4 ? `Mother ${i + 1}` : `Daughter ${i - 3}`;
+            return (
+              <motion.div
+                key={label}
+                initial={{ opacity: 0, scale: 0.7 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="w-full"
+              >
+                <FigureCard title={label} figure={fig} />
+              </motion.div>
+            );
+          })}
+        </div>
+      </Row>
+    );
+  };
+
+  /* ---------- NIECES ROW: 4 BIGGER CARDS ---------- */
+  const NiecesRow = () => {
+    if (nieces.length < 4) return null;
+
+    return (
+      <Row>
+        <div
+          className="grid gap-4"
+          style={{
+            gridTemplateColumns: "repeat(4, 1fr)",
+            direction: "rtl",
+          }}
+        >
+          {nieces.map((fig, i) => (
             <motion.div
-              key={label}
+              key={i}
               initial={{ opacity: 0, scale: 0.7 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4, delay: i * 0.08 }}
               className="w-full"
             >
-              <FigureCard title={label} figure={fig} />
+              <FigureCard title={`Niece ${i + 1}`} figure={fig} />
             </motion.div>
-          );
-        })}
+          ))}
+        </div>
+      </Row>
+    );
+  };
+
+  /* ---------- COURT ROW: 3 COLUMNS ---------- */
+  const CourtRow = () => {
+    if (!judge || witnesses.length < 2) return null;
+
+    return (
+      <div className="grid grid-cols-3 gap-2 mx-auto">
+        <Card fig={witnesses[1]} title="Left Witness" idx={0} />
+        <Card fig={judge} title="Judge" idx={1} />
+        <Card fig={witnesses[0]} title="Right Witness" idx={2} />
       </div>
-    </Row>
-  );
-};
 
-/* ---------- NIECES ROW: 4 BIGGER CARDS ---------- */
-const NiecesRow = () => {
-  if (nieces.length < 4) return null;
-
-  return (
-    <Row>
-      <div
-        className="grid gap-4"
-        style={{
-          gridTemplateColumns: "repeat(4, 1fr)",
-          direction: "rtl",
-        }}
-      >
-        {nieces.map((fig, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, scale: 0.7 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4, delay: i * 0.08 }}
-            className="w-full"
-          >
-            <FigureCard title={`Niece ${i + 1}`} figure={fig} />
-          </motion.div>
-        ))}
-      </div>
-    </Row>
-  );
-};
-
-/* ---------- COURT ROW: 3 COLUMNS ---------- */
-const CourtRow = () => {
-  if (!judge || witnesses.length < 2) return null;
-
-  return (
-    <Row>
-      <div
-        className="grid gap-4"
-        style={{
-          gridTemplateColumns: "repeat(3, 1fr)",
-          direction: "rtl",
-        }}
-      >
-        <FigureCard title="Left Witness" figure={witnesses[1]} />
-        <FigureCard title="Judge" figure={judge} />
-        <FigureCard title="Right Witness" figure={witnesses[0]} />
-      </div>
-    </Row>
-  );
-};
-
+    );
+  };
 
   /* ------------------------------ */
   /*           MAIN RENDER          */
