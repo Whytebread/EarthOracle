@@ -138,7 +138,13 @@ const NiecesRow = () => {
         }}
       >
         {nieces.map((fig, i) => (
-          <Card key={i} fig={fig} title={`Niece ${i + 1}`} idx={i} />
+          <Card
+            key={i}
+            fig={fig}
+            title={`Niece ${i + 1}`}
+            idx={i}
+            scale={2}   
+          />
         ))}
       </div>
     </div>
