@@ -82,18 +82,17 @@ const CastingBoard = () => {
   const disabled = mothers.length >= 4;
 
   /* ---------- REUSABLE CARD ---------- */
-  const Card = ({ fig, title, idx }) => (
-    <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4, delay: idx * 0.07 }}
-      className="flex justify-center"
-    >
-      <FigureCard title={title} figure={fig} />
-    </motion.div>
-  );
-
+const Card = ({ fig, title, idx, scale = 1 }) => (
+  <motion.div
+    layout
+    initial={{ opacity: 0, scale: 0.8 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.4, delay: idx * 0.07 }}
+    className="flex justify-center"
+  >
+    <FigureCard title={title} figure={fig} scale={scale} />
+  </motion.div>
+);
   /* ---------- TOP ROW (mothers → mothers+daughters) ---------- */
   const TopRow = () => {
     const isFull = mothers.length === 4 && daughters.length === 4;
