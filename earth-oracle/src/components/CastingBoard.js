@@ -96,21 +96,19 @@ export default function CastingBoard() {
   /* ------------------------------ */
   /*       REUSABLE CARD WRAPPER    */
   /* ------------------------------ */
-  const Card = ({ fig, title, idx, width }) => (
-    <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.35, delay: idx * 0.07 }}
-      style={{ width }}
-      className="flex flex-col items-center"
-    >
-      <div className="text-center font-semibold text-amber-900 mb-1">
-        {title}
-      </div>
-      <FigureCard title={title} figure={fig} />
-    </motion.div>
-  );
+const Card = ({ fig, title, idx, width }) => (
+  <motion.div
+    layout
+    initial={{ opacity: 0, scale: 0.95 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ duration: 0.35, delay: idx * 0.07 }}
+    style={{ width }}
+    className="flex flex-col items-center"
+  >
+    <FigureCard title={title} figure={fig} />
+  </motion.div>
+);
+
 
   const SHIELD_WIDTH = 1100;
 
@@ -192,12 +190,13 @@ export default function CastingBoard() {
     if (!judge || witnesses.length < 2) return null;
 
     return (
+      <Row>
       <div className="grid grid-cols-3 gap-2 mx-auto">
         <Card fig={witnesses[1]} title="Left Witness" idx={0} />
         <Card fig={judge} title="Judge" idx={1} />
         <Card fig={witnesses[0]} title="Right Witness" idx={2} />
       </div>
-
+      </Row>
     );
   };
 
