@@ -213,6 +213,7 @@ const Card = ({ fig, title, idx, width }) => (
         <TopRow />
         <NiecesRow />
         <CourtRow />
+        <HouseChart figures={houseFigures} />
       </div>
     </div>
   );
