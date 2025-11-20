@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import DiceRoller from "./DiceRoller";
 import FigureCard from "./FigureCard";
 import { geomanticFigures } from "../data/figures";
+import HouseChart from "./HouseChart";
 
 /* --- SHARED LAYOUT CONSTANTS --- */
 const CARD_W = 160;              // base card width
@@ -199,6 +200,35 @@ const Card = ({ fig, title, idx, width }) => (
       </Row>
     );
   };
+
+/*---------- HOUSE CHART --------------*/
+const houseFigures = [
+  ...mothers,
+  ...daughters,
+  ...nieces
+]; 
+
+  const HouseChart = ({ figures }) => {
+    return (
+      <div className="mt-10">
+        {/* placeholder for now */}
+        <div className="text-xl font-bold text-center mb-4">
+          House Chart (12 Houses)
+        </div>
+
+        <div className="grid grid-cols-4 gap-4">
+          {figures.map((fig, i) => (
+            <FigureCard
+              key={i}
+              title={`House ${i + 1}`}
+              figure={fig}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
 
   /* ------------------------------ */
   /*           MAIN RENDER          */
