@@ -97,18 +97,18 @@ export default function CastingBoard() {
   /* ------------------------------ */
   /*       REUSABLE CARD WRAPPER    */
   /* ------------------------------ */
-const Card = ({ fig, title, idx, width }) => (
-  <motion.div
-    layout
-    initial={{ opacity: 0, scale: 0.95 }}
-    animate={{ opacity: 1, scale: 1 }}
-    transition={{ duration: 0.35, delay: idx * 0.07 }}
-    style={{ width }}
-    className="flex flex-col items-center"
-  >
-    <FigureCard title={title} figure={fig} />
-  </motion.div>
-);
+  const Card = ({ fig, title, idx, width }) => (
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.35, delay: idx * 0.07 }}
+      style={{ width }}
+      className="flex flex-col items-center"
+    >
+      <FigureCard title={title} figure={fig} />
+    </motion.div>
+  );
 
 
   const SHIELD_WIDTH = 1100;
@@ -192,21 +192,20 @@ const Card = ({ fig, title, idx, width }) => (
 
     return (
       <Row>
-      <div className="grid grid-cols-3 gap-2 mx-auto">
-        <Card fig={witnesses[1]} title="Left Witness" idx={0} />
-        <Card fig={judge} title="Judge" idx={1} />
-        <Card fig={witnesses[0]} title="Right Witness" idx={2} />
-      </div>
+        <div className="grid grid-cols-3 gap-2 mx-auto">
+          <Card fig={witnesses[1]} title="Left Witness" idx={0} />
+          <Card fig={judge} title="Judge" idx={1} />
+          <Card fig={witnesses[0]} title="Right Witness" idx={2} />
+        </div>
       </Row>
     );
   };
 
-/*---------- HOUSE CHART --------------*/
-const houseFigures = [
-  ...mothers,
-  ...daughters,
-  ...nieces
-]; 
+  /*---------- HOUSE CHART --------------*/
+  const houseFigures =
+    mothers.length === 4 && daughters.length === 4 && nieces.length === 4
+      ? [...mothers, ...daughters, ...nieces] // total = 12
+      : [];
 
   const HouseChart = ({ figures }) => {
     return (
@@ -243,7 +242,11 @@ const houseFigures = [
         <TopRow />
         <NiecesRow />
         <CourtRow />
-        <HouseChart figures={houseFigures} />
+        {houseFigures.length === 12 && (
+          <div className="mt-16">
+            <HouseChart figures={houseFigures} />
+          </div>
+        )}
       </div>
     </div>
   );
