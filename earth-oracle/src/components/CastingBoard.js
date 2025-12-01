@@ -207,27 +207,6 @@ export default function CastingBoard() {
       ? [...mothers, ...daughters, ...nieces] // total = 12
       : [];
 
-  const HouseChart = ({ figures }) => {
-    return (
-      <div className="mt-10">
-        {/* placeholder for now */}
-        <div className="text-xl font-bold text-center mb-4">
-          House Chart (12 Houses)
-        </div>
-
-        <div className="grid grid-cols-4 gap-4">
-          {figures.map((fig, i) => (
-            <FigureCard
-              key={i}
-              title={`House ${i + 1}`}
-              figure={fig}
-            />
-          ))}
-        </div>
-      </div>
-    );
-  };
-
 
   /* ------------------------------ */
   /*           MAIN RENDER          */
