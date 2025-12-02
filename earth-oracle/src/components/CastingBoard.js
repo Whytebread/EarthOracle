@@ -221,11 +221,8 @@ export default function CastingBoard() {
         <TopRow />
         <NiecesRow />
         <CourtRow />
-        {houseFigures.length === 12 && (
-          <div className="mt-16">
-            <HouseChart figures={houseFigures} />
-          </div>
-        )}
+        {houseFigures.length === 12 && <HouseChart figures={houseFigures} />}
+
       </div>
     </div>
   );
