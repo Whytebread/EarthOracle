@@ -5,6 +5,7 @@ import FigureCard from "./FigureCard";
 import { geomanticFigures } from "../data/figures";
 import HouseChart from "./HouseChart";
 import HouseChartFrame from "./HouseChartFrame";
+import ShieldChartFrame from "./ShieldChartFrame";
 
 /* --- SHARED LAYOUT CONSTANTS --- */
 const CARD_W = 160;              // base card width
@@ -222,10 +223,12 @@ export default function CastingBoard() {
         <TopRow />
         <NiecesRow />
         <CourtRow />
-            {/* TEMP: house chart frame only */}
-      <div className="mt-20 flex justify-center">
-        <HouseChartFrame size={600} />
-      </div>
+
+        <ShieldChartFrame />
+        {/* TEMP: house chart frame only */}
+        <div className="mt-20 flex justify-center">
+          <HouseChartFrame size={600} />
+        </div>
 
       </div>
     </div>
