@@ -1,55 +1,110 @@
-export default function ShieldChartFrame({ slotWidth = 140, slotHeight = 180 }) {
-  const gap = 16;
+import React from "react";
 
-  const slotStyle = {
-    width: slotWidth,
-    height: slotHeight,
-    border: "2px dashed rgba(180,83,9,0.45)",
-    borderRadius: 12,
-    background: "rgba(255,248,220,0.35)",
-  };
+export default function ShieldFrame({ width = 900 }) {
+    const height = Math.round(width * 0.78);
 
-  return (
-    <div className="flex flex-col items-center gap-6">
+    return (
+        <div className="mx-auto" style={{ width }}>
+            <svg
+                viewBox="0 0 900 700"
+                width={width}
+                height={height}
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                {/* Outer shield outline */}
+                <path
+                    d="
+            M 50 40
+            H 850
+            V 420
+            C 850 480, 700 580, 450 660
+            C 200 580, 50 480, 50 420
+            Z
+          "
+                    fill="none"
+                    stroke="#92400e"
+                    strokeWidth="4"
+                />
 
-      {/* Mothers + Daughters (8 total, right → left) */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(8, ${slotWidth}px)`,
-          gap,
-        }}
-      >
-        {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} style={slotStyle} />
-        ))}
-      </div>
+                {/* Horizontal divider between mothers/daughters and nieces */}
+                <line
+                    x1="50"
+                    y1="200"
+                    x2="850"
+                    y2="200"
+                    stroke="#92400e"
+                    strokeWidth="2"
+                />
 
-      {/* Nieces (4) */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(4, ${slotWidth * 2}px)`,
-          gap,
-        }}
-      >
-        {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} style={slotStyle} />
-        ))}
-      </div>
+                {/* Vertical dividers for top row (8 columns) */}
+                {Array.from({ length: 7 }).map((_, i) => (
+                    <line
+                        key={i}
+                        x1={50 + ((i + 1) * 800) / 8}
+                        y1="40"
+                        x2={50 + ((i + 1) * 800) / 8}
+                        y2="200"
+                        stroke="#92400e"
+                        strokeWidth="2"
+                    />
+                ))}
 
-      {/* Witnesses + Judge */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(3, ${slotWidth}px)`,
-          gap,
-        }}
-      >
-        <div style={slotStyle} /> {/* Left Witness */}
-        <div style={slotStyle} /> {/* Judge */}
-        <div style={slotStyle} /> {/* Right Witness */}
-      </div>
-    </div>
-  );
+                {/* Vertical dividers for niece row (4 columns) */}
+                {Array.from({ length: 3 }).map((_, i) => (
+                    <line
+                        key={i}
+                        x1={50 + ((i + 1) * 800) / 4}
+                        y1="200"
+                        x2={50 + ((i + 1) * 800) / 4}
+                        y2="420"
+                        stroke="#92400e"
+                        strokeWidth="2"
+                    />
+                ))}
+
+                {/* Bottom divider under nieces */}
+                <line
+                    x1="50"
+                    y1="420"
+                    x2="850"
+                    y2="420"
+                    stroke="#92400e"
+                    strokeWidth="2"
+                />
+
+                {/* Judge triangle */}
+                <path
+                    d="
+            M 300 420
+            L 450 650
+            L 600 420
+            Z
+          "
+                    fill="none"
+                    stroke="#92400e"
+                    strokeWidth="2"
+                />
+
+                {/* Left witness divider */}
+                <line
+                    x1="300"
+                    y1="420"
+                    x2="450"
+                    y2="650"
+                    stroke="#92400e"
+                    strokeWidth="2"
+                />
+
+                {/* Right witness divider */}
+                <line
+                    x1="600"
+                    y1="420"
+                    x2="450"
+                    y2="650"
+                    stroke="#92400e"
+                    strokeWidth="2"
+                />
+            </svg>
+        </div>
+    );
 }
