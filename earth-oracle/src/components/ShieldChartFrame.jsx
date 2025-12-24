@@ -73,37 +73,25 @@ export default function ShieldFrame({ width = 900 }) {
                 />
 
                 {/* Judge triangle */}
-                <path
-                    d="
-            M 300 420
-            L 450 650
-            L 600 420
-            Z
-          "
-                    fill="none"
+                <line
+                    x1="250"
+                    y1="420"
+                    x2="450"
+                    y2="660"
                     stroke="#92400e"
                     strokeWidth="2"
                 />
 
-                {/* Left witness divider */}
                 <line
-                    x1="300"
+                    x1="650"
                     y1="420"
                     x2="450"
-                    y2="650"
+                    y2="660"
                     stroke="#92400e"
                     strokeWidth="2"
                 />
 
-                {/* Right witness divider */}
-                <line
-                    x1="600"
-                    y1="420"
-                    x2="450"
-                    y2="650"
-                    stroke="#92400e"
-                    strokeWidth="2"
-                />
+
             </svg>
         </div>
     );
