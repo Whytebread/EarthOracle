@@ -6,6 +6,7 @@ import { geomanticFigures } from "../data/figures";
 import HouseChart from "./HouseChart";
 import HouseChartFrame from "./HouseChartFrame";
 import ShieldChartFrame from "./ShieldChartFrame";
+import { shieldSlots } from "./Slots";
 
 /* --- SHARED LAYOUT CONSTANTS --- */
 const CARD_W = 160;              // base card width
@@ -209,6 +210,14 @@ export default function CastingBoard() {
       ? [...mothers, ...daughters, ...nieces] // total = 12
       : [];
 
+  shieldSlots.top.map(slot => (
+    <FigureCard
+      key={slot.id}
+      figure={data[slot.id]}
+      x={slot.x}
+      y={slot.y}
+    />
+  ));
 
   /* ------------------------------ */
   /*           MAIN RENDER          */
