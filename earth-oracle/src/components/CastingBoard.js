@@ -6,7 +6,7 @@ import { geomanticFigures } from "../data/figures";
 import HouseChart from "./HouseChart";
 import HouseChartFrame from "./HouseChartFrame";
 import ShieldChartFrame from "./ShieldChartFrame";
-import { shieldSlots } from "./Slots";
+import { shieldSlots } from "./ShieldSlots";
 
 /* --- SHARED LAYOUT CONSTANTS --- */
 const CARD_W = 160;              // base card width
