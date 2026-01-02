@@ -210,15 +210,6 @@ export default function CastingBoard() {
       ? [...mothers, ...daughters, ...nieces] // total = 12
       : [];
 
-  shieldSlots.top.map(slot => (
-    <FigureCard
-      key={slot.id}
-      figure={data[slot.id]}
-      x={slot.x}
-      y={slot.y}
-    />
-  ));
-
   /* ------------------------------ */
   /*           MAIN RENDER          */
   /* ------------------------------ */
@@ -233,11 +224,33 @@ export default function CastingBoard() {
         <NiecesRow />
         <CourtRow />
 
-        <ShieldChartFrame />
-        {/* TEMP: house chart frame only */}
-        <div className="mt-20 flex justify-center">
-          <HouseChartFrame size={600} />
-        </div>
+{/* SHIELD CHART */}
+<div className="relative mx-auto" style={{ width: 900, height: 700 }}>
+  <ShieldChartFrame />
+
+  {/* TEMP DEBUG: slot visualization */}
+  {shieldSlots.map((slot, i) => (
+    <div
+      key={slot.id}
+      style={{
+        position: "absolute",
+        left: slot.x,
+        top: slot.y,
+        width: slot.width,
+        height: slot.height,
+        border: "2px dashed red",
+        color: "red",
+        fontSize: 12,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        pointerEvents: "none",
+      }}
+    >
+      {i + 1}
+    </div>
+  ))}
+</div>
 
       </div>
     </div>
