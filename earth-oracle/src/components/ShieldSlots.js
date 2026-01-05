@@ -70,41 +70,41 @@ export const shieldSlots = [
     };
   }),
 
-  /* =========================
-     WITNESSES (13–14)
-     ========================= */
+/* =========================
+   WITNESSES (13–14)
+   ========================= */
 
-  {
-    id: "witness-left",
-    type: "witness",
-    order: 12,
-    x: LEFT,
-    y: BOTTOM_Y,
-    width: WIDTH / 2,
-    height: 160,
-  },
+{
+  id: "witness-left",
+  type: "witness",
+  order: 12,
+  x: LEFT + WIDTH * 0.25 - 70,
+  y: BOTTOM_Y + 10,
+  width: 140,
+  height: 170,
+},
 
-  {
-    id: "witness-right",
-    type: "witness",
-    order: 13,
-    x: LEFT + WIDTH / 2,
-    y: BOTTOM_Y,
-    width: WIDTH / 2,
-    height: 160,
-  },
+{
+  id: "witness-right",
+  type: "witness",
+  order: 13,
+  x: LEFT + WIDTH * 0.75 - 70,
+  y: BOTTOM_Y + 10,
+  width: 140,
+  height: 170,
+},
 
-  /* =========================
-     JUDGE (15)
-     ========================= */
+/* =========================
+   JUDGE (15)
+   ========================= */
 
-  {
-    id: "judge",
-    type: "judge",
-    order: 14,
-    x: LEFT + WIDTH * 0.25,
-    y: BOTTOM_Y + 160,
-    width: WIDTH * 0.5,
-    height: 200,
-  },
+{
+  id: "judge",
+  type: "judge",
+  order: 14,
+  x: LEFT + WIDTH / 2 - 60,
+  y: BOTTOM_Y + 55,
+  width: 120,
+  height: 200,
+},
 ];

@@ -25,8 +25,8 @@ const CARD_SCALE_BY_TYPE = {
 };
 
 const OPTICAL_OFFSETS = {
-  witness: { x: 0, y: 10 },
-  judge: { x: 0, y: 20 },
+  witness: { x: 0, y: -10 },
+  judge: { x: 0, y: -20 },
 };
 
 export default function CastingBoard() {
