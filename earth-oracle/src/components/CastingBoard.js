@@ -13,6 +13,22 @@ const CARD_W = 160;              // base card width
 const GAP = 8;
 const ROW_W = 8 * CARD_W + 7 * GAP; // exactly 8 card-widths
 
+// Scaling for cards
+const CARD_RATIO = 0.75; // width / height ratio of FigureCard
+
+const CARD_SCALE_BY_TYPE = {
+  mother: 0.85,
+  daughter: 0.85,
+  niece: 1.0,
+  witness: 0.9,
+  judge: 1.05,
+};
+
+const OPTICAL_OFFSETS = {
+  witness: { x: 0, y: 10 },
+  judge: { x: 0, y: 20 },
+};
+
 export default function CastingBoard() {
   const [mothers, setMothers] = useState([]);
   const [daughters, setDaughters] = useState([]);
@@ -210,6 +226,23 @@ export default function CastingBoard() {
       ? [...mothers, ...daughters, ...nieces] // total = 12
       : [];
 
+
+  const shieldFigures =
+    mothers.length === 4 &&
+      daughters.length === 4 &&
+      nieces.length === 4 &&
+      witnesses.length === 2 &&
+      judge
+      ? [
+        ...mothers,      // 0–3
+        ...daughters,    // 4–7
+        ...nieces,       // 8–11
+        witnesses[1],    // 12 → Left Witness
+        witnesses[0],    // 13 → Right Witness
+        judge,           // 14
+      ]
+      : [];
+
   /* ------------------------------ */
   /*           MAIN RENDER          */
   /* ------------------------------ */
@@ -220,37 +253,60 @@ export default function CastingBoard() {
         {/* Dice / lines remaining */}
         <DiceRoller onRollComplete={handleRoll} disabled={disabled} />
 
-        <TopRow />
+        {/* <TopRow />
         <NiecesRow />
-        <CourtRow />
+        <CourtRow /> */}
 
-{/* SHIELD CHART */}
-<div className="relative mx-auto" style={{ width: 900, height: 700 }}>
-  <ShieldChartFrame />
+        {/* SHIELD CHART */}
+        <div className="relative mx-auto" style={{ width: 900, height: 700 }}>
+          <ShieldChartFrame />
 
-  {/* TEMP DEBUG: slot visualization */}
-  {shieldSlots.map((slot, i) => (
-    <div
-      key={slot.id}
-      style={{
-        position: "absolute",
-        left: slot.x,
-        top: slot.y,
-        width: slot.width,
-        height: slot.height,
-        border: "2px dashed red",
-        color: "red",
-        fontSize: 12,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        pointerEvents: "none",
-      }}
-    >
-      {i + 1}
-    </div>
-  ))}
-</div>
+          {shieldSlots.map((slot) => {
+            const fig = shieldFigures[slot.order];
+            if (!fig) return null;
+
+            const scale = CARD_SCALE_BY_TYPE[slot.type] ?? 1;
+
+            // Fit card inside slot
+            const maxWidth = slot.width * scale;
+            const maxHeight = slot.height * scale;
+
+            let cardWidth = maxWidth;
+            let cardHeight = maxWidth / CARD_RATIO;
+
+            if (cardHeight > maxHeight) {
+              cardHeight = maxHeight;
+              cardWidth = cardHeight * CARD_RATIO;
+            }
+
+            const offset = OPTICAL_OFFSETS[slot.type] ?? { x: 0, y: 0 };
+
+            return (
+              <motion.div
+                key={slot.id}
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4 }}
+                style={{
+                  position: "absolute",
+                  left: slot.x + slot.width / 2 - cardWidth / 2 + offset.x,
+                  top: slot.y + slot.height / 2 - cardHeight / 2 + offset.y,
+                  width: cardWidth,
+                  height: cardHeight,
+                }}
+              >
+                <FigureCard
+                  title={slot.id.replace("-", " ")}
+                  figure={fig}
+                />
+              </motion.div>
+            );
+          })}
+
+
+
+        </div>
 
       </div>
     </div>
