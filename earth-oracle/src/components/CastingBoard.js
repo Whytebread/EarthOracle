@@ -243,6 +243,25 @@ export default function CastingBoard() {
       ]
       : [];
 
+  const formatShieldTitle = (slot) => {
+  switch (slot.type) {
+    case "mother":
+      return `Mother ${slot.order + 1}`;
+    case "daughter":
+      return `Daughter ${slot.order - 3}`;
+    case "niece":
+      return `Niece ${slot.order - 7}`;
+    case "witness":
+      return slot.id === "witness-left"
+        ? "Left Witness"
+        : "Right Witness";
+    case "judge":
+      return "Judge";
+    default:
+      return "";
+  }
+};
+
   /* ------------------------------ */
   /*           MAIN RENDER          */
   /* ------------------------------ */
@@ -297,7 +316,7 @@ export default function CastingBoard() {
                 }}
               >
                 <FigureCard
-                  title={slot.id.replace("-", " ")}
+                  title={formatShieldTitle(slot)}
                   figure={fig}
                 />
               </motion.div>
