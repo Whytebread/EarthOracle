@@ -4,12 +4,21 @@ const TOP = 40;
 
 const WIDTH = 800;
 
+const CARD_W = 90;
+const CARD_H = 120;
+
 // Row Y positions (matched to ShieldFrame)
 const TOP_ROW_Y = 40;
 const TOP_ROW_H = 160;
 
-const NIECE_ROW_Y = 200;
-const NIECE_ROW_H = 220;
+const NIECE_ROW_Y = 210;
+const NIECE_ROW_H = 190;
+
+const WITNESS_SLOT_W = 160;
+const WITNESS_SLOT_H = 160;
+
+const JUDGE_W = 120;
+const JUDGE_H = Math.round(JUDGE_W * 4 / 3);
 
 const BOTTOM_Y = 420;
 
@@ -78,20 +87,19 @@ export const shieldSlots = [
   id: "witness-left",
   type: "witness",
   order: 12,
-  x: LEFT + WIDTH * 0.25 - 70,
-  y: BOTTOM_Y - 5,   // ⬆ move UP
-  width: 140,
-  height: 155,      // ⬇ slightly shorter
+  x: LEFT + WIDTH * 0.25 - WITNESS_SLOT_W / 2,
+  y: BOTTOM_Y,
+  width: WITNESS_SLOT_W,
+  height: WITNESS_SLOT_H,
 },
-
 {
   id: "witness-right",
   type: "witness",
   order: 13,
-  x: LEFT + WIDTH * 0.75 - 70,
-  y: BOTTOM_Y - 5,   // ⬆ move UP
-  width: 140,
-  height: 155,
+  x: LEFT + WIDTH * 0.75 - WITNESS_SLOT_W / 2,
+  y: BOTTOM_Y,
+  width: WITNESS_SLOT_W,
+  height: WITNESS_SLOT_H,
 },
 
 /* =========================
@@ -102,9 +110,9 @@ export const shieldSlots = [
   id: "judge",
   type: "judge",
   order: 14,
-  x: LEFT + WIDTH / 2 - 60,
-  y: BOTTOM_Y + 55,
-  width: 120,
-  height: 200,
+  x: LEFT + WIDTH / 2 - JUDGE_W / 2,
+  y: BOTTOM_Y + 35,
+  width: JUDGE_W,
+  height: JUDGE_H,
 },
 ];
