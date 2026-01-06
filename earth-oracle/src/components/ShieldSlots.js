@@ -14,8 +14,9 @@ const TOP_ROW_H = 160;
 const NIECE_ROW_Y = 210;
 const NIECE_ROW_H = 190;
 
-const WITNESS_SLOT_W = 160;
-const WITNESS_SLOT_H = 160;
+const WITNESS_W = 110;
+const WITNESS_H = Math.round(WITNESS_W * 4 / 3);
+const WITNESS_PUSH = 50;
 
 const JUDGE_W = 120;
 const JUDGE_H = Math.round(JUDGE_W * 4 / 3);
@@ -87,19 +88,19 @@ export const shieldSlots = [
   id: "witness-left",
   type: "witness",
   order: 12,
-  x: LEFT + WIDTH * 0.25 - WITNESS_SLOT_W / 2,
-  y: BOTTOM_Y,
-  width: WITNESS_SLOT_W,
-  height: WITNESS_SLOT_H,
+  x: LEFT + WIDTH * 0.25 - WITNESS_W / 2 - WITNESS_PUSH,
+  y: BOTTOM_Y + 20,
+  width: WITNESS_W,
+  height: WITNESS_H,
 },
 {
   id: "witness-right",
   type: "witness",
   order: 13,
-  x: LEFT + WIDTH * 0.75 - WITNESS_SLOT_W / 2,
-  y: BOTTOM_Y,
-  width: WITNESS_SLOT_W,
-  height: WITNESS_SLOT_H,
+  x: LEFT + WIDTH * 0.75 - WITNESS_W / 2 + WITNESS_PUSH,
+  y: BOTTOM_Y + 20,
+  width: WITNESS_W,
+  height: WITNESS_H,
 },
 
 /* =========================
