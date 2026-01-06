@@ -1,12 +1,12 @@
 import React from "react";
 
 export default function ShieldFrame({ width = 900 }) {
-    const height = Math.round(width * 0.78);
+    const height = Math.round(width * 0.86);
 
     return (
         <div className="mx-auto" style={{ width }}>
             <svg
-                viewBox="0 0 900 700"
+                viewBox="0 0 900 780"
                 width={width}
                 height={height}
                 xmlns="http://www.w3.org/2000/svg"
@@ -17,8 +17,8 @@ export default function ShieldFrame({ width = 900 }) {
             M 50 40
             H 850
             V 420
-            C 850 480, 700 580, 450 660
-            C 200 580, 50 480, 50 420
+            C 850 520, 700 650, 450 740
+            C 200 650, 50 520, 50 420
             Z
           "
                     fill="none"
@@ -77,7 +77,7 @@ export default function ShieldFrame({ width = 900 }) {
                     x1="250"
                     y1="420"
                     x2="450"
-                    y2="660"
+                    y2="740"
                     stroke="#92400e"
                     strokeWidth="2"
                 />
@@ -86,7 +86,7 @@ export default function ShieldFrame({ width = 900 }) {
                     x1="650"
                     y1="420"
                     x2="450"
-                    y2="660"
+                    y2="740"
                     stroke="#92400e"
                     strokeWidth="2"
                 />

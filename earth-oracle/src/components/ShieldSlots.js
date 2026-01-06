@@ -79,9 +79,9 @@ export const shieldSlots = [
   type: "witness",
   order: 12,
   x: LEFT + WIDTH * 0.25 - 70,
-  y: BOTTOM_Y + 10,
+  y: BOTTOM_Y - 5,   // ⬆ move UP
   width: 140,
-  height: 170,
+  height: 155,      // ⬇ slightly shorter
 },
 
 {
@@ -89,9 +89,9 @@ export const shieldSlots = [
   type: "witness",
   order: 13,
   x: LEFT + WIDTH * 0.75 - 70,
-  y: BOTTOM_Y + 10,
+  y: BOTTOM_Y - 5,   // ⬆ move UP
   width: 140,
-  height: 170,
+  height: 155,
 },
 
 /* =========================
