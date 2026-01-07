@@ -29,12 +29,16 @@ const OPTICAL_OFFSETS = {
   judge: { x: 0, y: -14 },
 };
 
+
+
 export default function CastingBoard() {
   const [mothers, setMothers] = useState([]);
   const [daughters, setDaughters] = useState([]);
   const [nieces, setNieces] = useState([]);
   const [witnesses, setWitnesses] = useState([]);
   const [judge, setJudge] = useState(null);
+  const [stagedFigures, setStagedFigures] = useState([]);
+  const [placedFigures, setPlacedFigures] = useState([]);
 
   /* ------------------------------ */
   /*       ADD A MOTHER FROM DICE   */
@@ -43,11 +47,40 @@ export default function CastingBoard() {
     const fig = geomanticFigures.find((f) =>
       f.pattern.every((v, i) => v === pattern[i])
     );
-    setMothers((prev) => [
+
+    if (!fig) return;
+
+    const index = mothers.length;
+
+    const mother = {
+      name: fig.name,
+      pattern,
+    };
+
+    setMothers((prev) => [...prev, mother]);
+
+    setStagedFigures((prev) => [
       ...prev,
-      { name: fig ? fig.name : "Unknown", pattern },
+      {
+        id: `mother-${index}`,
+        figure: mother,
+        title: `Mother ${index + 1}`,
+        layoutIndex: index,
+      },
+    ]);
+
+    setPlacedFigures((prev) => [
+      ...prev,
+      {
+        id: `mother-${index}`,
+        figure: mother,
+        title: `Mother ${index + 1}`,
+        layoutIndex: index,
+        ...shieldSlots[index],
+      },
     ]);
   };
+
 
   const xor = (a, b) => a.map((v, i) => (v + b[i]) % 2);
 
@@ -141,6 +174,136 @@ export default function CastingBoard() {
       {children}
     </div>
   );
+
+  // cascade daughter cards
+  useEffect(() => {
+    if (mothers.length !== 4) return;
+
+    daughters.forEach((fig, i) => {
+      setTimeout(() => {
+        const index = i + 4;
+
+        setStagedFigures((prev) => [
+          ...prev,
+          {
+            id: `daughter-${i}`,
+            figure: fig,
+            title: `Daughter ${i + 1}`,
+            layoutIndex: index,
+          },
+        ]);
+
+        setPlacedFigures((prev) => [
+          ...prev,
+          {
+            id: `daughter-${i}`,
+            figure: fig,
+            title: `Daughter ${i + 1}`,
+            layoutIndex: index,
+            ...shieldSlots[index],
+          },
+        ]);
+      }, i * 300);
+    });
+  }, [daughters]);
+
+  // Cascade nieces
+  // cascade nieces
+useEffect(() => {
+  if (nieces.length !== 4) return;
+
+  nieces.forEach((fig, i) => {
+    setTimeout(() => {
+      const index = i + 8;
+
+      setStagedFigures((prev) => [
+        ...prev,
+        {
+          id: `niece-${i}`,
+          figure: fig,
+          title: `Niece ${i + 1}`,
+          layoutIndex: index,
+        },
+      ]);
+
+      setPlacedFigures((prev) => [
+        ...prev,
+        {
+          id: `niece-${i}`,
+          figure: fig,
+          title: `Niece ${i + 1}`,
+          layoutIndex: index,
+          ...shieldSlots[index],
+        },
+      ]);
+    }, i * 300);
+  });
+}, [nieces]);
+
+// cascade witnesses
+useEffect(() => {
+  if (witnesses.length !== 2) return;
+
+  witnesses.forEach((fig, i) => {
+    const index = i === 0 ? 13 : 12; // right, then left
+
+    setTimeout(() => {
+      setStagedFigures((prev) => [
+        ...prev,
+        {
+          id: `witness-${i}`,
+          figure: fig,
+          title: i === 0 ? "Right Witness" : "Left Witness",
+          layoutIndex: index,
+        },
+      ]);
+
+      setPlacedFigures((prev) => [
+        ...prev,
+        {
+          id: `witness-${i}`,
+          figure: fig,
+          title: i === 0 ? "Right Witness" : "Left Witness",
+          layoutIndex: index,
+          ...shieldSlots[index],
+        },
+      ]);
+    }, i * 300);
+  });
+}, [witnesses]);
+
+// cascade judge
+useEffect(() => {
+  if (!judge) return;
+
+  const index = 14;
+
+  setTimeout(() => {
+    setStagedFigures((prev) => [
+      ...prev,
+      {
+        id: "judge",
+        figure: judge,
+        title: "Judge",
+        layoutIndex: index,
+      },
+    ]);
+
+    setPlacedFigures((prev) => [
+      ...prev,
+      {
+        id: "judge",
+        figure: judge,
+        title: "Judge",
+        layoutIndex: index,
+        ...shieldSlots[index],
+      },
+    ]);
+  }, 400);
+}, [judge]);
+
+
+
 
   /* ---------- TOP ROW: 8 COLUMNS ---------- */
   const TopRow = () => {
@@ -267,6 +430,8 @@ export default function CastingBoard() {
 
   const getLayoutId = (index) => `geomantic-figure-${index}`;
 
+  const mothersComplete = mothers.length === 4;
+
   // Capitalizes the title of the figure cards 
   const formatShieldTitle = (slot) => {
     switch (slot.type) {
@@ -287,6 +452,7 @@ export default function CastingBoard() {
     }
   };
 
+
   /* ------------------------------ */
   /*           MAIN RENDER          */
   /* ------------------------------ */
@@ -305,86 +471,40 @@ export default function CastingBoard() {
         <div className="relative mx-auto" style={{ width: 900, height: 700 }}>
           <ShieldChartFrame />
 
-          {shieldSlots.map((slot) => {
-            const fig = shieldFigures[slot.order];
-            if (!fig) return null;
-
-            const scale = CARD_SCALE_BY_TYPE[slot.type] ?? 1;
-
-            // Fit card inside slot
-            const maxWidth = slot.width * scale;
-            const maxHeight = slot.height * scale;
-
-            let cardWidth = maxWidth;
-            let cardHeight = maxWidth / CARD_RATIO;
-
-            if (cardHeight > maxHeight) {
-              cardHeight = maxHeight;
-              cardWidth = cardHeight * CARD_RATIO;
-            }
-
-            const offset = OPTICAL_OFFSETS[slot.type] ?? { x: 0, y: 0 };
-            const centerX = 900 / 2; // shield width
-            const slotCenterX = slot.x + slot.width / 2;
-
-            const arcX =
-              slot.type === "judge"
-                ? 0
-                : slotCenterX < centerX
-                  ? -80
-                  : 80;
-
-            const DROP_DELAY = 0.25;
-
-            return (
+          {/* ---------- STAGING AREA (INVISIBLE) ---------- */}
+          <div
+            className="absolute -top-[500px] left-0 right-0 flex justify-center gap-4 pointer-events-none"
+          >
+            {stagedFigures.map((fig, i) => (
               <motion.div
-                key={slot.id}
-                layoutId={getLayoutId(slot.order)}
-                layout
-                initial={{
-                  opacity: 0,
-                  x: arcX,
-                  y: -220,
-                }}
-                animate={{
-                  opacity: 1,
-                  x: 0,
-                  y: 0,
-                }}
-                transition={{
-                  opacity: {
-                    duration: 0.2,
-                    delay: slot.order * DROP_DELAY,
-                  },
-                  x: {
-                    duration: 0.6,
-                    ease: "easeOut",
-                    delay: slot.order * DROP_DELAY,
-                  },
-                  y: {
-                    type: "spring",
-                    stiffness: 260,
-                    damping: 22,
-                    delay: slot.order * DROP_DELAY,
-                  },
-                }}
-                style={{
-                  position: "absolute",
-                  left: slot.x + slot.width / 2 - cardWidth / 2 + offset.x,
-                  top: slot.y + slot.height / 2 - cardHeight / 2 + offset.y,
-                  width: cardWidth,
-                  height: cardHeight,
-                }}
+                key={fig.id}
+                layoutId={getLayoutId(fig.layoutIndex)}
               >
-                <FigureCard
-                  title={formatShieldTitle(slot)}
-                  figure={fig}
-                />
+                <FigureCard figure={fig.figure} title={fig.title} />
               </motion.div>
-            );
-          })}
+            ))}
+          </div>
 
-
+          {/* ---------- SHIELD CARDS ---------- */}
+          {placedFigures.map((placed) => (
+            <motion.div
+              key={placed.id}
+              layoutId={getLayoutId(placed.layoutIndex)}
+              layout
+              style={{
+                position: "absolute",
+                left: placed.x,
+                top: placed.y,
+                width: placed.width,
+                height: placed.height,
+              }}
+            >
+              <FigureCard
+                title={placed.title}
+                figure={placed.figure}
+              />
+            </motion.div>
+          ))}
 
         </div>
 
