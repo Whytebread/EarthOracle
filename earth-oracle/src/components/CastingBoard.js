@@ -116,8 +116,9 @@ export default function CastingBoard() {
   /* ------------------------------ */
   /*       REUSABLE CARD WRAPPER    */
   /* ------------------------------ */
-  const Card = ({ fig, title, idx, width }) => (
+  const Card = ({ fig, title, idx, width, layoutId }) => (
     <motion.div
+      layoutId={layoutId}
       layout
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -159,9 +160,12 @@ export default function CastingBoard() {
         >
           {items.map((fig, i) => {
             const label = i < 4 ? `Mother ${i + 1}` : `Daughter ${i - 3}`;
+            const layoutIndex = i < 4 ? i : i + 4;
+
             return (
               <motion.div
                 key={label}
+                layoutId={getLayoutId(layoutIndex)}
                 initial={{ opacity: 0, scale: 0.7 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
@@ -192,6 +196,7 @@ export default function CastingBoard() {
           {nieces.map((fig, i) => (
             <motion.div
               key={i}
+              layoutId={getLayoutId(i + 8)}
               initial={{ opacity: 0, scale: 0.7 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.4, delay: i * 0.08 }}
@@ -212,9 +217,26 @@ export default function CastingBoard() {
     return (
       <Row>
         <div className="grid grid-cols-3 gap-2 mx-auto">
-          <Card fig={witnesses[1]} title="Left Witness" idx={0} />
-          <Card fig={judge} title="Judge" idx={1} />
-          <Card fig={witnesses[0]} title="Right Witness" idx={2} />
+          <Card
+            fig={witnesses[1]}
+            title="Left Witness"
+            idx={0}
+            layoutId={getLayoutId(12)}
+          />
+
+          <Card
+            fig={judge}
+            title="Judge"
+            idx={1}
+            layoutId={getLayoutId(14)}
+          />
+
+          <Card
+            fig={witnesses[0]}
+            title="Right Witness"
+            idx={2}
+            layoutId={getLayoutId(13)}
+          />
         </div>
       </Row>
     );
@@ -243,24 +265,27 @@ export default function CastingBoard() {
       ]
       : [];
 
+  const getLayoutId = (index) => `geomantic-figure-${index}`;
+
+  // Capitalizes the title of the figure cards 
   const formatShieldTitle = (slot) => {
-  switch (slot.type) {
-    case "mother":
-      return `Mother ${slot.order + 1}`;
-    case "daughter":
-      return `Daughter ${slot.order - 3}`;
-    case "niece":
-      return `Niece ${slot.order - 7}`;
-    case "witness":
-      return slot.id === "witness-left"
-        ? "Left Witness"
-        : "Right Witness";
-    case "judge":
-      return "Judge";
-    default:
-      return "";
-  }
-};
+    switch (slot.type) {
+      case "mother":
+        return `Mother ${slot.order + 1}`;
+      case "daughter":
+        return `Daughter ${slot.order - 3}`;
+      case "niece":
+        return `Niece ${slot.order - 7}`;
+      case "witness":
+        return slot.id === "witness-left"
+          ? "Left Witness"
+          : "Right Witness";
+      case "judge":
+        return "Judge";
+      default:
+        return "";
+    }
+  };
 
   /* ------------------------------ */
   /*           MAIN RENDER          */
@@ -299,14 +324,50 @@ export default function CastingBoard() {
             }
 
             const offset = OPTICAL_OFFSETS[slot.type] ?? { x: 0, y: 0 };
+            const centerX = 900 / 2; // shield width
+            const slotCenterX = slot.x + slot.width / 2;
+
+            const arcX =
+              slot.type === "judge"
+                ? 0
+                : slotCenterX < centerX
+                  ? -80
+                  : 80;
+
+            const DROP_DELAY = 0.25;
 
             return (
               <motion.div
                 key={slot.id}
+                layoutId={getLayoutId(slot.order)}
                 layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4 }}
+                initial={{
+                  opacity: 0,
+                  x: arcX,
+                  y: -220,
+                }}
+                animate={{
+                  opacity: 1,
+                  x: 0,
+                  y: 0,
+                }}
+                transition={{
+                  opacity: {
+                    duration: 0.2,
+                    delay: slot.order * DROP_DELAY,
+                  },
+                  x: {
+                    duration: 0.6,
+                    ease: "easeOut",
+                    delay: slot.order * DROP_DELAY,
+                  },
+                  y: {
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 22,
+                    delay: slot.order * DROP_DELAY,
+                  },
+                }}
                 style={{
                   position: "absolute",
                   left: slot.x + slot.width / 2 - cardWidth / 2 + offset.x,
