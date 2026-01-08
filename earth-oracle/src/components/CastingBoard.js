@@ -209,19 +209,82 @@ export default function CastingBoard() {
 
   // Cascade nieces
   // cascade nieces
-useEffect(() => {
-  if (nieces.length !== 4) return;
+  useEffect(() => {
+    if (nieces.length !== 4) return;
 
-  nieces.forEach((fig, i) => {
+    nieces.forEach((fig, i) => {
+      setTimeout(() => {
+        const index = i + 8;
+
+        setStagedFigures((prev) => [
+          ...prev,
+          {
+            id: `niece-${i}`,
+            figure: fig,
+            title: `Niece ${i + 1}`,
+            layoutIndex: index,
+          },
+        ]);
+
+        setPlacedFigures((prev) => [
+          ...prev,
+          {
+            id: `niece-${i}`,
+            figure: fig,
+            title: `Niece ${i + 1}`,
+            layoutIndex: index,
+            ...shieldSlots[index],
+          },
+        ]);
+      }, i * 300);
+    });
+  }, [nieces]);
+
+  // cascade witnesses
+  useEffect(() => {
+    if (witnesses.length !== 2) return;
+
+    witnesses.forEach((fig, i) => {
+      const index = i === 0 ? 13 : 12; // right, then left
+
+      setTimeout(() => {
+        setStagedFigures((prev) => [
+          ...prev,
+          {
+            id: `witness-${i}`,
+            figure: fig,
+            title: i === 0 ? "Right Witness" : "Left Witness",
+            layoutIndex: index,
+          },
+        ]);
+
+        setPlacedFigures((prev) => [
+          ...prev,
+          {
+            id: `witness-${i}`,
+            figure: fig,
+            title: i === 0 ? "Right Witness" : "Left Witness",
+            layoutIndex: index,
+            ...shieldSlots[index],
+          },
+        ]);
+      }, i * 300);
+    });
+  }, [witnesses]);
+
+  // cascade judge
+  useEffect(() => {
+    if (!judge) return;
+
+    const index = 14;
+
     setTimeout(() => {
-      const index = i + 8;
-
       setStagedFigures((prev) => [
         ...prev,
         {
-          id: `niece-${i}`,
-          figure: fig,
-          title: `Niece ${i + 1}`,
+          id: "judge",
+          figure: judge,
+          title: "Judge",
           layoutIndex: index,
         },
       ]);
@@ -229,78 +292,15 @@ useEffect(() => {
       setPlacedFigures((prev) => [
         ...prev,
         {
-          id: `niece-${i}`,
-          figure: fig,
-          title: `Niece ${i + 1}`,
+          id: "judge",
+          figure: judge,
+          title: "Judge",
           layoutIndex: index,
           ...shieldSlots[index],
         },
       ]);
-    }, i * 300);
-  });
-}, [nieces]);
-
-// cascade witnesses
-useEffect(() => {
-  if (witnesses.length !== 2) return;
-
-  witnesses.forEach((fig, i) => {
-    const index = i === 0 ? 13 : 12; // right, then left
-
-    setTimeout(() => {
-      setStagedFigures((prev) => [
-        ...prev,
-        {
-          id: `witness-${i}`,
-          figure: fig,
-          title: i === 0 ? "Right Witness" : "Left Witness",
-          layoutIndex: index,
-        },
-      ]);
-
-      setPlacedFigures((prev) => [
-        ...prev,
-        {
-          id: `witness-${i}`,
-          figure: fig,
-          title: i === 0 ? "Right Witness" : "Left Witness",
-          layoutIndex: index,
-          ...shieldSlots[index],
-        },
-      ]);
-    }, i * 300);
-  });
-}, [witnesses]);
-
-// cascade judge
-useEffect(() => {
-  if (!judge) return;
-
-  const index = 14;
-
-  setTimeout(() => {
-    setStagedFigures((prev) => [
-      ...prev,
-      {
-        id: "judge",
-        figure: judge,
-        title: "Judge",
-        layoutIndex: index,
-      },
-    ]);
-
-    setPlacedFigures((prev) => [
-      ...prev,
-      {
-        id: "judge",
-        figure: judge,
-        title: "Judge",
-        layoutIndex: index,
-        ...shieldSlots[index],
-      },
-    ]);
-  }, 400);
-}, [judge]);
+    }, 400);
+  }, [judge]);
 
 
 
@@ -432,6 +432,26 @@ useEffect(() => {
 
   const mothersComplete = mothers.length === 4;
 
+  // shows house chart after the shield chart has been completed
+  const shieldComplete =
+    mothers.length === 4 &&
+    daughters.length === 4 &&
+    nieces.length === 4 &&
+    witnesses.length === 2 &&
+    judge;
+
+  const [showHouseChart, setShowHouseChart] = useState(false);
+
+  useEffect(() => {
+    if (!shieldComplete) return;
+
+    const t = setTimeout(() => {
+      setShowHouseChart(true);
+    }, 600);
+
+    return () => clearTimeout(t);
+  }, [shieldComplete]);
+
   // Capitalizes the title of the figure cards 
   const formatShieldTitle = (slot) => {
     switch (slot.type) {
@@ -505,6 +525,16 @@ useEffect(() => {
               />
             </motion.div>
           ))}
+
+          {showHouseChart && (
+            <div className="mt-16">
+              <HouseChartFrame />
+              <HouseChart
+                figures={houseFigures}
+                getLayoutId={getLayoutId}
+              />
+            </div>
+          )}
 
         </div>
 

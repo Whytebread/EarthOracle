@@ -77,9 +77,7 @@ if (updatedLines.length === 4) {
             currentFigureNumber={figureCount}
             currentLine={currentFigureLines.length}
           />
-          <div className="mt-4 text-sm text-gray-400">
-            Lines completed: {currentFigureLines.length}/4
-          </div>
+
         </>
       ) : (
         <>
