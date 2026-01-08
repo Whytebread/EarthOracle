@@ -22,10 +22,20 @@ export default function HouseChart({ figures = [], getLayoutId }) {
   const outerR = size * 0.45;
 
   // House 1 = middle left, counter-clockwise
-  const angles = [
-    180, 210, 240, 270, 300, 330,
-      0,  30,  60,  90, 120, 150
-  ];
+const angles = [
+  180, // House 1 (middle left)
+  150, // House 2
+  120, // House 3
+   90, // House 4 (top middle)
+   60, // House 5
+   30, // House 6
+    0, // House 7 (right middle)
+  330, // House 8
+  300, // House 9
+  270, // House 10 (bottom middle)
+  240, // House 11
+  210  // House 12 (upper left-ish)
+];
 
   const triangles = angles.map((deg, i) => {
     const rad = (deg * Math.PI) / 180;
@@ -60,13 +70,14 @@ export default function HouseChart({ figures = [], getLayoutId }) {
 
         return (
           <motion.div
-            key={i}
-            layoutId={getLayoutId(i)}
-            layout
+            key={`house-${i}`}   // React identity ONLY
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: i * 0.05, duration: 0.4 }}
             style={{
               position: "absolute",
-              left,
-              top,
+              left: t.anchor.x - cardW / 2,
+              top: t.anchor.y - cardH / 2,
               width: cardW,
               height: cardH,
             }}
@@ -75,7 +86,7 @@ export default function HouseChart({ figures = [], getLayoutId }) {
             <div className="text-center font-bold text-amber-800 text-sm mb-1">
               House {t.house}
             </div>
-            <FigureCard title="" figure={fig} />
+            <FigureCard figure={fig} title="" />
           </motion.div>
         );
       })}
