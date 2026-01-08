@@ -487,47 +487,60 @@ export default function CastingBoard() {
         <NiecesRow />
         <CourtRow /> */}
 
-        {/* SHIELD CHART */}
-        <div className="relative mx-auto" style={{ width: 900, height: 700 }}>
-          <ShieldChartFrame />
+        {/* CHART PANEL */}
+        <div className="
+    mt-10
+    rounded-2xl
+    bg-amber-50/70
+    shadow-lg
+    p-10
+  ">
 
-          {/* ---------- STAGING AREA (INVISIBLE) ---------- */}
-          <div
-            className="absolute -top-[500px] left-0 right-0 flex justify-center gap-4 pointer-events-none"
-          >
-            {stagedFigures.map((fig, i) => (
+          {/* SHIELD CHART */}
+          <div className="relative mx-auto" style={{ width: 900, height: 700 }}>
+            <ShieldChartFrame />
+
+            {/* ---------- STAGING AREA (INVISIBLE) ---------- */}
+            <div
+              className="absolute -top-[500px] left-0 right-0 flex justify-center gap-4 pointer-events-none"
+            >
+              {stagedFigures.map((fig, i) => (
+                <motion.div
+                  key={fig.id}
+                  layoutId={getLayoutId(fig.layoutIndex)}
+                >
+                  <FigureCard figure={fig.figure} title={fig.title} />
+                </motion.div>
+              ))}
+            </div>
+
+            {/* ---------- SHIELD CARDS ---------- */}
+            {placedFigures.map((placed) => (
               <motion.div
-                key={fig.id}
-                layoutId={getLayoutId(fig.layoutIndex)}
+                key={placed.id}
+                layoutId={getLayoutId(placed.layoutIndex)}
+                layout
+                style={{
+                  position: "absolute",
+                  left: placed.x,
+                  top: placed.y,
+                  width: placed.width,
+                  height: placed.height,
+                }}
               >
-                <FigureCard figure={fig.figure} title={fig.title} />
+                <FigureCard
+                  title={placed.title}
+                  figure={placed.figure}
+                />
               </motion.div>
             ))}
           </div>
 
-          {/* ---------- SHIELD CARDS ---------- */}
-          {placedFigures.map((placed) => (
-            <motion.div
-              key={placed.id}
-              layoutId={getLayoutId(placed.layoutIndex)}
-              layout
-              style={{
-                position: "absolute",
-                left: placed.x,
-                top: placed.y,
-                width: placed.width,
-                height: placed.height,
-              }}
-            >
-              <FigureCard
-                title={placed.title}
-                figure={placed.figure}
-              />
-            </motion.div>
-          ))}
-
           {showHouseChart && (
-            <div className="mt-16">
+            <div
+              className="relative mx-auto mt-20"
+              style={{ width: 900, height: 900 }}
+            >
               <HouseChartFrame />
               <HouseChart
                 figures={houseFigures}
@@ -540,5 +553,6 @@ export default function CastingBoard() {
 
       </div>
     </div>
+
   );
 }
