@@ -22,22 +22,22 @@ export default function HouseChart({ figures = [], getLayoutId }) {
   const outerR = size * 0.45;
 
   // House 1 = middle left, counter-clockwise
-const angles = [
-  180, // House 1 (middle left)
-  150, // House 2
-  120, // House 3
-   90, // House 4 (top middle)
-   60, // House 5
-   30, // House 6
+  const angles = [
+    180, // House 1 (middle left)
+    150, // House 2
+    120, // House 3
+    90, // House 4 (top middle)
+    60, // House 5
+    30, // House 6
     0, // House 7 (right middle)
-  330, // House 8
-  300, // House 9
-  270, // House 10 (bottom middle)
-  240, // House 11
-  210  // House 12 (upper left-ish)
-];
+    330, // House 8
+    300, // House 9
+    270, // House 10 (bottom middle)
+    240, // House 11
+    210  // House 12 (upper left-ish)
+  ];
 
-  const triangles = angles.map((deg, i) => {
+  const houseSlots = angles.map((deg, i) => {
     const rad = (deg * Math.PI) / 180;
 
     const tip = { x: cx + outerR * Math.cos(rad), y: cy + outerR * Math.sin(rad) };
@@ -49,28 +49,41 @@ const angles = [
     const p2 = { x: base.x - baseWidth * Math.cos(perp), y: base.y - baseWidth * Math.sin(perp) };
 
     const anchor = {
-      x: base.x * 0.72 + tip.x * 0.28,
-      y: base.y * 0.72 + tip.y * 0.28,
+      x: base.x * 0.6 + tip.x * 0.4,
+      y: base.y * 0.6 + tip.y * 0.4,
     };
 
-    return { anchor, house: i + 1 };
+    return {
+      house: i + 1,
+      tip,
+      base,
+      p1,
+      p2,
+      anchor,
+    };
   });
 
-  const cardW = 132;
-  const cardH = 178;
 
   return (
     <div style={{ width: size, height: size, position: "relative" }}>
-      {triangles.map((t, i) => {
+      {houseSlots.map((t, i) => {
         const fig = figures[i];
-        if (!fig) return null;
+        if (!fig || !t.tip || !t.base) return null;
+
+        const depth = Math.hypot(
+          t.tip.x - t.base.x,
+          t.tip.y - t.base.y
+        );
+
+        const cardH = depth * 0.65;
+        const cardW = cardH * 0.74;
 
         const left = t.anchor.x - cardW / 2;
         const top = t.anchor.y - cardH / 2;
 
         return (
           <motion.div
-            key={`house-${i}`}   // React identity ONLY
+            key={`house-${i}`}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: i * 0.05, duration: 0.4 }}

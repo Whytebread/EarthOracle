@@ -541,11 +541,10 @@ export default function CastingBoard() {
               className="relative mx-auto mt-20"
               style={{ width: 900, height: 900 }}
             >
-              <HouseChartFrame />
-              <HouseChart
-                figures={houseFigures}
-                getLayoutId={getLayoutId}
-              />
+              <HouseChartFrame size={600}>
+                <HouseChart figures={houseFigures} />
+              </HouseChartFrame>
+
             </div>
           )}
 
