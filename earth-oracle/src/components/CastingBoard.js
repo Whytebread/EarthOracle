@@ -539,14 +539,19 @@ export default function CastingBoard() {
           {showHouseChart && (
             <div
               className="relative mx-auto mt-20"
-              style={{ width: 900, height: 900 }}
+              style={{ width: 840, height: 840 }}
             >
-              <HouseChartFrame size={600}>
-                <HouseChart figures={houseFigures} />
-              </HouseChartFrame>
+              {/* FRAME */}
+              <HouseChartFrame size={840} />
 
+              {/* CARDS */}
+              <HouseChart
+                figures={placedFigures.slice(0, 12)}
+                size={840}
+              />
             </div>
           )}
+
 
         </div>
 
