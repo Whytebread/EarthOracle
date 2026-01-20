@@ -8,6 +8,7 @@ import HouseChartFrame from "./HouseChartFrame";
 import ShieldChartFrame from "./ShieldChartFrame";
 import { shieldSlots } from "./ShieldSlots";
 
+
 /* --- SHARED LAYOUT CONSTANTS --- */
 const CARD_W = 160;              // base card width
 const GAP = 8;
