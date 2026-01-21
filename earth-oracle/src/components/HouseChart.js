@@ -9,10 +9,12 @@ export default function HouseChart({ figures = [], size = 840 }) {
 
   const slots = getHouseSlots(size);
 
+  
+
   return (
     <>
       {slots.map((slot, i) => {
-        const item = figures[i];
+        const item = figures[slot.house - 1];
         if (!item?.figure) return null;
 
         return (

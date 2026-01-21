@@ -7,6 +7,7 @@ import HouseChart from "./HouseChart";
 import HouseChartFrame from "./HouseChartFrame";
 import ShieldChartFrame from "./ShieldChartFrame";
 import { shieldSlots } from "./ShieldSlots";
+import { getHouseSlots } from "./HouseSlots";
 
 
 /* --- SHARED LAYOUT CONSTANTS --- */
@@ -29,7 +30,6 @@ const OPTICAL_OFFSETS = {
   witness: { x: 0, y: -6 },
   judge: { x: 0, y: -14 },
 };
-
 
 
 export default function CastingBoard() {
@@ -407,10 +407,33 @@ export default function CastingBoard() {
   };
 
   /*---------- HOUSE CHART --------------*/
-  const houseFigures =
-    mothers.length === 4 && daughters.length === 4 && nieces.length === 4
-      ? [...mothers, ...daughters, ...nieces] // total = 12
-      : [];
+const shieldHouseFigures =
+  mothers.length === 4 &&
+  daughters.length === 4 &&
+  nieces.length === 4
+    ? [
+        mothers[0],   // House 1
+        mothers[1],   // House 2
+        mothers[2],   // House 3
+        mothers[3],   // House 4
+        daughters[0], // House 5
+        daughters[1], // House 6
+        daughters[2], // House 7
+        daughters[3], // House 8
+        nieces[0],    // House 9
+        nieces[1],    // House 10
+        nieces[2],    // House 11
+        nieces[3],    // House 12
+      ]
+    : [];
+
+
+const houseSlots = getHouseSlots(840);
+
+const houseFigures =
+  shieldHouseFigures.length === 12
+    ? houseSlots.map(slot => shieldHouseFigures[slot.house - 1])
+    : [];
 
 
   const shieldFigures =
