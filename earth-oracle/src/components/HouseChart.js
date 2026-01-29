@@ -9,18 +9,16 @@ export default function HouseChart({ figures = [], size = 840 }) {
 
   const slots = getHouseSlots(size);
 
-  
-
   return (
     <>
-      {slots.map((slot, i) => {
-        const item = figures[slot.house - 1];
+      {slots.map((slot) => {
+        const item = figures.find(f => f.house === slot.house);
         if (!item?.figure) return null;
 
         return (
           <motion.div
-            key={slot.house}
-            layoutId={`house-${item.id}`} // duplicate, not move
+            key={`house-${slot.house}`}
+            layoutId={`house-${item.id}`} 
             style={{
               position: "absolute",
               left: slot.x,
@@ -39,4 +37,5 @@ export default function HouseChart({ figures = [], size = 840 }) {
     </>
   );
 }
+
 

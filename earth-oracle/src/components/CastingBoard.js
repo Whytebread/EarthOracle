@@ -408,31 +408,11 @@ export default function CastingBoard() {
 
   /*---------- HOUSE CHART --------------*/
 const shieldHouseFigures =
-  mothers.length === 4 &&
-  daughters.length === 4 &&
-  nieces.length === 4
-    ? [
-        mothers[0],   // House 1
-        mothers[1],   // House 2
-        mothers[2],   // House 3
-        mothers[3],   // House 4
-        daughters[0], // House 5
-        daughters[1], // House 6
-        daughters[2], // House 7
-        daughters[3], // House 8
-        nieces[0],    // House 9
-        nieces[1],    // House 10
-        nieces[2],    // House 11
-        nieces[3],    // House 12
-      ]
-    : [];
-
-
-const houseSlots = getHouseSlots(840);
-
-const houseFigures =
-  shieldHouseFigures.length === 12
-    ? houseSlots.map(slot => shieldHouseFigures[slot.house - 1])
+  placedFigures.length >= 12
+    ? placedFigures.slice(0, 12).map((pf, i) => ({
+        house: i + 1,   // House number mapping
+        ...pf,          // keeps id, figure, title, layoutIndex
+      }))
     : [];
 
 
@@ -570,7 +550,7 @@ const houseFigures =
 
               {/* CARDS */}
               <HouseChart
-                figures={placedFigures.slice(0, 12)}
+                figures={shieldHouseFigures}
                 size={840}
               />
             </div>
