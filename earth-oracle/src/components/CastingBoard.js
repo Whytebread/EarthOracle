@@ -8,6 +8,7 @@ import HouseChartFrame from "./HouseChartFrame";
 import ShieldChartFrame from "./ShieldChartFrame";
 import { shieldSlots } from "./ShieldSlots";
 import { getHouseSlots } from "./HouseSlots";
+import { LayoutGroup } from "framer-motion";
 
 
 /* --- SHARED LAYOUT CONSTANTS --- */
@@ -407,13 +408,13 @@ export default function CastingBoard() {
   };
 
   /*---------- HOUSE CHART --------------*/
-const shieldHouseFigures =
-  placedFigures.length >= 12
-    ? placedFigures.slice(0, 12).map((pf, i) => ({
+  const shieldHouseFigures =
+    placedFigures.length >= 12
+      ? placedFigures.slice(0, 12).map((pf, i) => ({
         house: i + 1,   // House number mapping
         ...pf,          // keeps id, figure, title, layoutIndex
       }))
-    : [];
+      : [];
 
 
   const shieldFigures =
@@ -480,45 +481,31 @@ const shieldHouseFigures =
   /* ------------------------------ */
   /*           MAIN RENDER          */
   /* ------------------------------ */
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-amber-100 p-6">
-      <div className="max-w-7xl mx-auto">
+return (
+  <div className="min-h-screen bg-gradient-to-b from-amber-50 to-amber-100 p-6">
+    <div className="max-w-7xl mx-auto">
 
-        {/* Dice / lines remaining */}
-        <DiceRoller onRollComplete={handleRoll} disabled={disabled} />
+      {/* Dice */}
+      <DiceRoller onRollComplete={handleRoll} disabled={disabled} />
 
-        {/* <TopRow />
-        <NiecesRow />
-        <CourtRow /> */}
-
-        {/* CHART PANEL */}
-        <div className="
-    mt-10
-    rounded-2xl
-    bg-amber-50/70
-    shadow-lg
-    p-10
-  ">
+      {/* CHART PANEL */}
+      <LayoutGroup>
+        <div className="mt-10 rounded-2xl bg-amber-50/70 shadow-lg p-10">
 
           {/* SHIELD CHART */}
           <div className="relative mx-auto" style={{ width: 900, height: 700 }}>
             <ShieldChartFrame />
 
-            {/* ---------- STAGING AREA (INVISIBLE) ---------- */}
-            <div
-              className="absolute -top-[500px] left-0 right-0 flex justify-center gap-4 pointer-events-none"
-            >
-              {stagedFigures.map((fig, i) => (
-                <motion.div
-                  key={fig.id}
-                  layoutId={getLayoutId(fig.layoutIndex)}
-                >
+            {/* STAGING AREA */}
+            <div className="absolute -top-[500px] left-0 right-0 flex justify-center gap-4 pointer-events-none">
+              {stagedFigures.map((fig) => (
+                <motion.div key={fig.id} layoutId={getLayoutId(fig.layoutIndex)}>
                   <FigureCard figure={fig.figure} title={fig.title} />
                 </motion.div>
               ))}
             </div>
 
-            {/* ---------- SHIELD CARDS ---------- */}
+            {/* SHIELD CARDS */}
             {placedFigures.map((placed) => (
               <motion.div
                 key={placed.id}
@@ -527,40 +514,27 @@ const shieldHouseFigures =
                 style={{
                   position: "absolute",
                   left: placed.x,
-                  top: placed.y,
+                  top: placed.top ?? placed.y,
                   width: placed.width,
                   height: placed.height,
                 }}
               >
-                <FigureCard
-                  title={placed.title}
-                  figure={placed.figure}
-                />
+                <FigureCard title={placed.title} figure={placed.figure} />
               </motion.div>
             ))}
           </div>
 
+          {/* HOUSE CHART */}
           {showHouseChart && (
-            <div
-              className="relative mx-auto mt-20"
-              style={{ width: 840, height: 840 }}
-            >
-              {/* FRAME */}
+            <div className="relative mx-auto mt-20" style={{ width: 840, height: 840 }}>
               <HouseChartFrame size={840} />
-
-              {/* CARDS */}
-              <HouseChart
-                figures={shieldHouseFigures}
-                size={840}
-              />
+              <HouseChart figures={shieldHouseFigures} size={840} />
             </div>
           )}
 
-
         </div>
+      </LayoutGroup>
 
-      </div>
     </div>
-
-  );
-}
+  </div>
+)};
